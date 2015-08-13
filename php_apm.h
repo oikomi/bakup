@@ -92,6 +92,7 @@ typedef struct apm_request_data {
 	RD_DEF(ts);
 	RD_DEF(script);
 	RD_DEF(method);
+	RD_DEF(status);
 
 	zend_bool initialized, cookies_found, post_vars_found;
 	smart_str cookies, post_vars;

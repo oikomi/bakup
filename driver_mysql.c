@@ -59,7 +59,8 @@ CREATE TABLE IF NOT EXISTS request (\
     cookies TEXT NOT NULL,\
     post_vars TEXT NOT NULL,\
     referer TEXT NOT NULL,\
-    method TEXT NOT NULL\
+    method TEXT NOT NULL,\
+    status TEXT NOT NULL\
 )"
 	);
 		mysql_query(
@@ -119,8 +120,8 @@ CREATE TABLE IF NOT EXISTS stats (\
 /* Insert a request in the backend */
 static void apm_driver_mysql_insert_request(TSRMLS_D)
 {
-	char *application_esc = NULL, *script_esc = NULL, *uri_esc = NULL, *host_esc = NULL, *cookies_esc = NULL, *post_vars_esc = NULL, *referer_esc = NULL, *method_esc = NULL, *sql = NULL;
-	unsigned int application_len = 0, script_len = 0, uri_len = 0, host_len = 0, ip_int = 0, cookies_len = 0, post_vars_len = 0, referer_len = 0, method_len = 0;
+	char *application_esc = NULL, *script_esc = NULL, *uri_esc = NULL, *host_esc = NULL, *cookies_esc = NULL, *post_vars_esc = NULL, *referer_esc = NULL, *method_esc = NULL, *status_esc = NULL, *sql = NULL;
+	unsigned int application_len = 0, script_len = 0, uri_len = 0, host_len = 0, ip_int = 0, cookies_len = 0, post_vars_len = 0, referer_len = 0, method_len = 0, status_len = 0;
 	struct in_addr ip_addr;
 	MYSQL *connection;
 
@@ -145,6 +146,7 @@ static void apm_driver_mysql_insert_request(TSRMLS_D)
 	APM_MYSQL_ESCAPE_STR(host);
 	APM_MYSQL_ESCAPE_STR(referer);
 	APM_MYSQL_ESCAPE_STR(method);
+	APM_MYSQL_ESCAPE_STR(status);
 	APM_MYSQL_ESCAPE_SMART_STR(cookies);
 	APM_MYSQL_ESCAPE_SMART_STR(post_vars);
 
@@ -155,7 +157,7 @@ static void apm_driver_mysql_insert_request(TSRMLS_D)
 	sql = emalloc(166 + application_len + script_len + uri_len + host_len + cookies_len + post_vars_len + referer_len + method_len);
 	sprintf(
 		sql,
-		"INSERT INTO request (application, script, uri, host, ip, cookies, post_vars, referer, method) VALUES ('%s', '%s', '%s', '%s', %u, '%s', '%s', '%s', '%s')",
+		"INSERT INTO request (application, script, uri, host, ip, cookies, post_vars, referer, method, status) VALUES ('%s', '%s', '%s', '%s', %u, '%s', '%s', '%s', '%s', '%s')",
 		application_esc ? application_esc : "",
 		APM_RD(script_found) ? script_esc : "",
 		APM_RD(uri_found) ? uri_esc : "",
@@ -163,7 +165,8 @@ static void apm_driver_mysql_insert_request(TSRMLS_D)
 		ip_int, APM_RD(cookies_found) ? cookies_esc : "",
 		APM_RD(post_vars_found) ? post_vars_esc : "",
 		APM_RD(referer_found) ? referer_esc : "",
-		APM_RD(method_found) ? method_esc : "");
+		APM_RD(method_found) ? method_esc : "",
+		APM_RD(status_found) ? status_esc : "");
 
 	APM_DEBUG("[MySQL driver] Sending: %s\n", sql);
 	if (mysql_query(connection, sql) != 0)
@@ -188,6 +191,8 @@ static void apm_driver_mysql_insert_request(TSRMLS_D)
 		efree(referer_esc);
 	if (method_esc)
 		efree(method_esc);
+	if (status_esc)
+		efree(status_esc);
 
 	APM_G(mysql_is_request_created) = 1;
 	APM_DEBUG("[MySQL driver] End insert request\n");

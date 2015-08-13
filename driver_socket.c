@@ -216,6 +216,10 @@ int apm_driver_socket_rshutdown(TSRMLS_D)
 	ADD_Z_DATA("uri", uri);
 	ADD_Z_DATA("host", host);
 
+	//add status code
+
+	ADD_Z_DATA("status", status);
+
 	/* Add ip, referer, ... if an error occured or if thresold is reached. */
 	if (
 		APM_G(socket_events) != *APM_G(socket_last_event)

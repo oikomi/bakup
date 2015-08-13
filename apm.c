@@ -240,18 +240,12 @@ static PHP_GINIT_FUNCTION(apm)
 
 	next = &apm_globals->drivers->next;
 	*next = (apm_driver_entry *) NULL;
-#ifdef APM_DRIVER_SQLITE3
-	*next = apm_driver_sqlite3_create();
-	next = &(*next)->next;
-#endif
+
 #ifdef APM_DRIVER_MYSQL
 	*next = apm_driver_mysql_create();
 	next = &(*next)->next;
 #endif
-#ifdef APM_DRIVER_STATSD
-	*next = apm_driver_statsd_create();
-	next = &(*next)->next;
-#endif
+
 #ifdef APM_DRIVER_SOCKET
 	*next = apm_driver_socket_create();
 	next = &(*next)->next;
@@ -568,6 +562,9 @@ void extract_data()
 		REGISTER_INFO("REQUEST_TIME", ts, IS_LONG);
 		REGISTER_INFO("SCRIPT_FILENAME", script, IS_STRING);
 		REGISTER_INFO("REQUEST_METHOD", method, IS_STRING);
+
+		// add res status
+		REGISTER_INFO("REDIRECT_STATUS", status, IS_STRING);
 		
 		if (APM_G(store_ip)) {
 			REGISTER_INFO("REMOTE_ADDR", ip, IS_STRING);
