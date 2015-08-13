@@ -7,22 +7,21 @@
 
 
 #ifdef HAVE_CONFIG_H
-# include "config.h"
+	#include "config.h"
 #endif
 
-/* gettimeofday */
 #ifdef PHP_WIN32
-# include "win32/time.h"
+	#include "win32/time.h"
 #else
-# include "main/php_config.h"
+	#include "main/php_config.h"
 #endif
 
 #ifdef HAVE_GETRUSAGE
-# include <sys/resource.h>
+	#include <sys/resource.h>
 #endif
 
 #ifdef HAVE_SYS_TIME_H
-# include <sys/time.h>
+	#include <sys/time.h>
 #endif
 
 #include "php.h"
@@ -31,17 +30,13 @@
 #include "php_apm.h"
 #include "backtrace.h"
 #include "ext/standard/info.h"
-#ifdef APM_DRIVER_SQLITE3
-# include "driver_sqlite3.h"
-#endif
+
 #ifdef APM_DRIVER_MYSQL
-# include "driver_mysql.h"
+	#include "driver_mysql.h"
 #endif
-#ifdef APM_DRIVER_STATSD
-# include "driver_statsd.h"
-#endif
+
 #ifdef APM_DRIVER_SOCKET
-# include "driver_socket.h"
+	#include "driver_socket.h"
 #endif
 
 ZEND_DECLARE_MODULE_GLOBALS(apm);
@@ -130,7 +125,7 @@ zend_module_entry apm_module_entry = {
 };
 
 #ifdef COMPILE_DL_APM
-ZEND_GET_MODULE(apm)
+	ZEND_GET_MODULE(apm)
 #endif
 
 PHP_INI_BEGIN()
@@ -159,23 +154,6 @@ PHP_INI_BEGIN()
 	/* Maximum recursion depth used when dumping a variable */
 	STD_PHP_INI_ENTRY("baidu.apm.dump_max_depth", "1", PHP_INI_ALL, OnUpdateLong, dump_max_depth, zend_apm_globals, apm_globals)
 
-#ifdef APM_DRIVER_SQLITE3
-	/* Boolean controlling whether the driver is active or not */
-	STD_PHP_INI_BOOLEAN("baidu.apm.sqlite_enabled", "1", PHP_INI_PERDIR, OnUpdateBool, sqlite3_enabled, zend_apm_globals, apm_globals)
-	/* Boolean controlling the collection of stats */
-	STD_PHP_INI_BOOLEAN("baidu.apm.sqlite_stats_enabled", "0", PHP_INI_ALL, OnUpdateBool, sqlite3_stats_enabled, zend_apm_globals, apm_globals)
-	/* Control which exceptions to collect (0: none exceptions collected, 1: collect uncaught exceptions (default), 2: collect ALL exceptions) */
-	STD_PHP_INI_ENTRY("baidu.apm.sqlite_exception_mode", "1", PHP_INI_PERDIR, OnUpdateLongGEZero, sqlite3_exception_mode, zend_apm_globals, apm_globals)
-	/* error_reporting of the driver */
-	STD_PHP_INI_ENTRY("baidu.apm.sqlite_error_reporting", NULL, PHP_INI_ALL, OnUpdateAPMsqlite3ErrorReporting, sqlite3_error_reporting, zend_apm_globals, apm_globals)
-	/* Path to the SQLite database file */
-	STD_PHP_INI_ENTRY("baidu.apm.sqlite_max_event_insert_timeout", "100", PHP_INI_ALL, OnUpdateLong, sqlite3_timeout, zend_apm_globals, apm_globals)
-	/* Max timeout to wait for storing the event in the DB */
-	STD_PHP_INI_ENTRY("baidu.apm.sqlite_db_path", SQLITE3_DEFAULTDB, PHP_INI_ALL, OnUpdateDBFile, sqlite3_db_path, zend_apm_globals, apm_globals)
-	/* Store silenced events? */
-	STD_PHP_INI_BOOLEAN("baidu.apm.sqlite_process_silenced_events", "1", PHP_INI_PERDIR, OnUpdateBool, sqlite3_process_silenced_events, zend_apm_globals, apm_globals)
-#endif
-
 #ifdef APM_DRIVER_MYSQL
 	/* Boolean controlling whether the driver is active or not */
 	STD_PHP_INI_BOOLEAN("baidu.apm.mysql_enabled", "1", PHP_INI_PERDIR, OnUpdateBool, mysql_enabled, zend_apm_globals, apm_globals)
@@ -197,23 +175,6 @@ PHP_INI_BEGIN()
 	STD_PHP_INI_ENTRY("baidu.apm.mysql_db", "apm", PHP_INI_PERDIR, OnUpdateString, mysql_db_name, zend_apm_globals, apm_globals)
 	/* process silenced events? */
 	STD_PHP_INI_BOOLEAN("baidu.apm.mysql_process_silenced_events", "1", PHP_INI_PERDIR, OnUpdateBool, mysql_process_silenced_events, zend_apm_globals, apm_globals)
-#endif
-
-#ifdef APM_DRIVER_STATSD
-	/* Boolean controlling whether the driver is active or not */
-	STD_PHP_INI_BOOLEAN("baidu.apm.statsd_enabled", "1", PHP_INI_PERDIR, OnUpdateBool, statsd_enabled, zend_apm_globals, apm_globals)
-	/* Boolean controlling the collection of stats */
-	STD_PHP_INI_BOOLEAN("baidu.apm.statsd_stats_enabled", "1", PHP_INI_ALL, OnUpdateBool, statsd_stats_enabled, zend_apm_globals, apm_globals)
-	/* Control which exceptions to collect (0: none exceptions collected, 1: collect uncaught exceptions (default), 2: collect ALL exceptions) */
-	STD_PHP_INI_ENTRY("baidu.apm.statsd_exception_mode","1", PHP_INI_PERDIR, OnUpdateLongGEZero, statsd_exception_mode, zend_apm_globals, apm_globals)
-	/* error_reporting of the driver */
-	STD_PHP_INI_ENTRY("baidu.apm.statsd_error_reporting", NULL, PHP_INI_ALL, OnUpdateAPMstatsdErrorReporting, statsd_error_reporting, zend_apm_globals, apm_globals)
-	/* StatsD host */
-	STD_PHP_INI_ENTRY("baidu.apm.statsd_host", "localhost", PHP_INI_PERDIR, OnUpdateString, statsd_host, zend_apm_globals, apm_globals)
-	/* StatsD port */
-	STD_PHP_INI_ENTRY("baidu.apm.statsd_port", "8125", PHP_INI_PERDIR, OnUpdateLong, statsd_port, zend_apm_globals, apm_globals)
-	/* StatsD port */
-	STD_PHP_INI_ENTRY("baidu.apm.statsd_prefix", "apm", PHP_INI_ALL, OnUpdateString, statsd_prefix, zend_apm_globals, apm_globals)
 #endif
 
 #ifdef APM_DRIVER_SOCKET
