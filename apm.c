@@ -1,3 +1,9 @@
+/*
+ * apm.c
+ *
+ *  Created on: 13/08/2015
+ *      Author: miaohong(miaohong01@baidu.com)
+ */
 
 
 #ifdef HAVE_CONFIG_H

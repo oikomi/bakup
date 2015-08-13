@@ -1,3 +1,10 @@
+/*
+ * php_apm.c
+ *
+ *  Created on: 13/08/2015
+ *      Author: miaohong(miaohong01@baidu.com)
+ */
+
 
 
 #ifndef PHP_APM_H
@@ -23,9 +30,7 @@
 # define E_EXCEPTION (1<<15L)
 #endif
 
-#ifdef APM_DRIVER_SQLITE3
-	#include <sqlite3.h>
-#endif
+
 #ifdef APM_DRIVER_MYSQL
 	#include <mysql/mysql.h>
 #endif
@@ -235,30 +240,6 @@ ZEND_BEGIN_MODULE_GLOBALS(apm)
 	FILE * debugfile;
 #endif
 
-#ifdef APM_DRIVER_SQLITE3
-	/* Boolean controlling whether the driver is active or not */
-	zend_bool sqlite3_enabled;
-	/* Boolean controlling the collection of stats */
-	zend_bool sqlite3_stats_enabled;
-	/* Control which exceptions to collect (0: none exceptions collected, 1: collect uncaught exceptions (default), 2: collect ALL exceptions) */
-	long sqlite3_exception_mode;
-	/* driver error reporting */
-	int sqlite3_error_reporting;
-	/* Path to the SQLite database file */
-	char *sqlite3_db_path;
-	/* The actual db file */
-	char sqlite3_db_file[MAXPATHLEN];
-	/* DB handle */
-	sqlite3 *sqlite3_event_db;
-	/* Max timeout to wait for storing the event in the DB */
-	long sqlite3_timeout;
-	/* Request ID */
-	sqlite3_int64 sqlite3_request_id;
-	/* Boolean to ensure request content is only inserted once */
-	zend_bool sqlite3_is_request_created;
-	/* Option to process silenced events */
-	zend_bool sqlite3_process_silenced_events;
-#endif
 
 #ifdef APM_DRIVER_MYSQL
 	/* Boolean controlling whether the driver is active or not */
@@ -288,26 +269,6 @@ ZEND_BEGIN_MODULE_GLOBALS(apm)
 	zend_bool mysql_is_request_created;
 #endif
 
-#ifdef APM_DRIVER_STATSD
-	/* Boolean controlling whether the driver is active or not */
-	zend_bool statsd_enabled;
-	/* Boolean controlling the collection of stats */
-	zend_bool statsd_stats_enabled;
-	/* (unused for StatsD) */
-	long statsd_exception_mode;
-	/* (unused for StatsD) */
-	int statsd_error_reporting;
-	/* StatsD host */
-	char *statsd_host;
-	/* StatsD port */
-	unsigned int statsd_port;
-	/* StatsD key prefix */
-	char *statsd_prefix;
-	/* addinfo for StatsD server */
-	struct addrinfo *statsd_servinfo;
-	/* Option to process silenced events */
-	zend_bool statsd_process_silenced_events;
-#endif
 
 #ifdef APM_DRIVER_SOCKET
 	/* Boolean controlling whether the driver is active or not */
