@@ -33,6 +33,7 @@ static void mysql_destroy(TSRMLS_D) {
 MYSQL * mysql_get_instance(TSRMLS_D) {
 	my_bool reconnect = 1;
 	if (APM_G(mysql_event_db) == NULL) {
+		APM_DEBUG("[MySQL driver] mysql_event_db is null (mysql handler)... \n");
 		mysql_library_init(0, NULL, NULL);
 		APM_G(mysql_event_db) = malloc(sizeof(MYSQL));
 
@@ -53,35 +54,35 @@ MYSQL * mysql_get_instance(TSRMLS_D) {
 		mysql_query(
 			APM_G(mysql_event_db),
 			"\
-CREATE TABLE IF NOT EXISTS request (\
-    id INTEGER UNSIGNED PRIMARY KEY auto_increment,\
-    application VARCHAR(255) NOT NULL,\
-    ts TIMESTAMP NOT NULL,\
-    script TEXT NOT NULL,\
-    uri TEXT NOT NULL,\
-    host TEXT NOT NULL,\
-    ip INTEGER UNSIGNED NOT NULL,\
-    cookies TEXT NOT NULL,\
-    post_vars TEXT NOT NULL,\
-    referer TEXT NOT NULL,\
-    method TEXT NOT NULL,\
-    status TEXT NOT NULL\
-)"
+			CREATE TABLE IF NOT EXISTS request (\
+			    id INTEGER UNSIGNED PRIMARY KEY auto_increment,\
+			    application VARCHAR(255) NOT NULL,\
+			    ts TIMESTAMP NOT NULL,\
+			    script TEXT NOT NULL,\
+			    uri TEXT NOT NULL,\
+			    host TEXT NOT NULL,\
+			    ip INTEGER UNSIGNED NOT NULL,\
+			    cookies TEXT NOT NULL,\
+			    post_vars TEXT NOT NULL,\
+			    referer TEXT NOT NULL,\
+			    method TEXT NOT NULL,\
+			    status TEXT NOT NULL\
+			)"
 	);
 		mysql_query(
 			APM_G(mysql_event_db),
-			"\
-CREATE TABLE IF NOT EXISTS event (\
-    id INTEGER UNSIGNED PRIMARY KEY auto_increment,\
-    request_id INTEGER UNSIGNED,\
-    ts TIMESTAMP NOT NULL,\
-    type SMALLINT UNSIGNED NOT NULL,\
-    file TEXT NOT NULL,\
-    line MEDIUMINT UNSIGNED NOT NULL,\
-    message TEXT NOT NULL,\
-    backtrace BLOB NOT NULL,\
-    KEY request (request_id)\
-)"
+						"\
+			CREATE TABLE IF NOT EXISTS event (\
+			    id INTEGER UNSIGNED PRIMARY KEY auto_increment,\
+			    request_id INTEGER UNSIGNED,\
+			    ts TIMESTAMP NOT NULL,\
+			    type SMALLINT UNSIGNED NOT NULL,\
+			    file TEXT NOT NULL,\
+			    line MEDIUMINT UNSIGNED NOT NULL,\
+			    message TEXT NOT NULL,\
+			    backtrace BLOB NOT NULL,\
+			    KEY request (request_id)\
+			)"
 	);
 
 		mysql_query(
@@ -125,6 +126,7 @@ CREATE TABLE IF NOT EXISTS stats (\
 /* Insert a request in the backend */
 static void apm_driver_mysql_insert_request(TSRMLS_D)
 {
+	APM_DEBUG("[MySQL driver] ======apm_driver_mysql_insert_request \n");
 	char *application_esc = NULL, *script_esc = NULL, *uri_esc = NULL, *host_esc = NULL, *cookies_esc = NULL, *post_vars_esc = NULL, *referer_esc = NULL, *method_esc = NULL, *status_esc = NULL, *sql = NULL;
 	unsigned int application_len = 0, script_len = 0, uri_len = 0, host_len = 0, ip_int = 0, cookies_len = 0, post_vars_len = 0, referer_len = 0, method_len = 0, status_len = 0;
 	struct in_addr ip_addr;
@@ -206,6 +208,7 @@ static void apm_driver_mysql_insert_request(TSRMLS_D)
 /* Insert an event in the backend */
 void apm_driver_mysql_process_event(PROCESS_EVENT_ARGS)
 {
+	APM_DEBUG("[MySQL driver] ======apm_driver_mysql_process_event \n");
 	char *filename_esc = NULL, *msg_esc = NULL, *trace_esc = NULL, *sql = NULL;
 	int filename_len = 0, msg_len = 0, trace_len = 0;
 	MYSQL *connection;
@@ -275,6 +278,7 @@ int apm_driver_mysql_rshutdown(TSRMLS_D)
 
 void apm_driver_mysql_process_stats(TSRMLS_D)
 {
+	APM_DEBUG("[MySQL driver] ======apm_driver_mysql_process_stats \n");	
 	char *sql = NULL;
 	MYSQL *connection;
 
