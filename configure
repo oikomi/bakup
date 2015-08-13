@@ -5101,7 +5101,7 @@ $as_echo "#define APM_DRIVER_SOCKET 1" >>confdefs.h
 
 
   old_IFS=$IFS
-  for ac_src in apm.c backtrace.c log.c $sqlite3_driver $mysql_driver $statsd_driver $socket_driver; do
+  for ac_src in apm.c backtrace.c log.c  $mysql_driver  $socket_driver; do
 
       IFS=.
       set $ac_src
@@ -5150,7 +5150,7 @@ EOF
 
 
   old_IFS=$IFS
-  for ac_src in apm.c backtrace.c log.c $sqlite3_driver $mysql_driver $statsd_driver $socket_driver; do
+  for ac_src in apm.c backtrace.c log.c  $mysql_driver  $socket_driver; do
 
       IFS=.
       set $ac_src
@@ -5280,7 +5280,7 @@ _ACEOF
 
 
   old_IFS=$IFS
-  for ac_src in apm.c backtrace.c log.c $sqlite3_driver $mysql_driver $statsd_driver $socket_driver; do
+  for ac_src in apm.c backtrace.c log.c  $mysql_driver  $socket_driver; do
 
       IFS=.
       set $ac_src
@@ -5326,7 +5326,7 @@ EOF
 
 
   old_IFS=$IFS
-  for ac_src in apm.c backtrace.c log.c $sqlite3_driver $mysql_driver $statsd_driver $socket_driver; do
+  for ac_src in apm.c backtrace.c log.c  $mysql_driver  $socket_driver; do
 
       IFS=.
       set $ac_src

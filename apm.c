@@ -154,6 +154,18 @@ PHP_INI_BEGIN()
 	/* Maximum recursion depth used when dumping a variable */
 	STD_PHP_INI_ENTRY("baidu.apm.dump_max_depth", "1", PHP_INI_ALL, OnUpdateLong, dump_max_depth, zend_apm_globals, apm_globals)
 
+//file
+	/* Boolean controlling whether the driver is active or not */
+	//STD_PHP_INI_BOOLEAN("baidu.apm.file_enabled", "1", PHP_INI_PERDIR, OnUpdateBool, file_enabled, zend_apm_globals, apm_globals)
+	/* Boolean controlling the collection of stats */
+	//STD_PHP_INI_BOOLEAN("baidu.apm.file_stats_enabled", "0", PHP_INI_ALL, OnUpdateBool, file_stats_enabled, zend_apm_globals, apm_globals)
+	/* Control which exceptions to collect (0: none exceptions collected, 1: collect uncaught exceptions (default), 2: collect ALL exceptions) */
+	//STD_PHP_INI_ENTRY("baidu.apm.file_exception_mode","1", PHP_INI_PERDIR, OnUpdateLongGEZero, file_exception_mode, zend_apm_globals, apm_globals)
+	/* error_reporting of the driver */
+	//STD_PHP_INI_ENTRY("baidu.apm.file_error_reporting", NULL, PHP_INI_ALL, OnUpdateAPMfileErrorReporting, file_error_reporting, zend_apm_globals, apm_globals)
+	
+
+
 #ifdef APM_DRIVER_MYSQL
 	/* Boolean controlling whether the driver is active or not */
 	STD_PHP_INI_BOOLEAN("baidu.apm.mysql_enabled", "1", PHP_INI_PERDIR, OnUpdateBool, mysql_enabled, zend_apm_globals, apm_globals)

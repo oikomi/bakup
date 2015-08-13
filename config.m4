@@ -138,6 +138,6 @@ if test "$PHP_APM" != "no"; then
     AC_DEFINE(APM_DRIVER_SOCKET, 1, [activate socket driver])
   fi
 
-  PHP_NEW_EXTENSION(apm, apm.c backtrace.c log.c $sqlite3_driver $mysql_driver $statsd_driver $socket_driver, $ext_shared)
+  PHP_NEW_EXTENSION(apm, apm.c backtrace.c log.c  $mysql_driver  $socket_driver, $ext_shared)
   PHP_SUBST(APM_SHARED_LIBADD)
 fi
