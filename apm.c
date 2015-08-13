@@ -208,15 +208,15 @@ static PHP_GINIT_FUNCTION(apm)
 	next = &apm_globals->drivers->next;
 	*next = (apm_driver_entry *) NULL;
 
-#ifdef APM_DRIVER_MYSQL
-	*next = apm_driver_mysql_create();
-	next = &(*next)->next;
-#endif
+	#ifdef APM_DRIVER_MYSQL
+		*next = apm_driver_mysql_create();
+		next = &(*next)->next;
+	#endif
 
-#ifdef APM_DRIVER_SOCKET
-	*next = apm_driver_socket_create();
-	next = &(*next)->next;
-#endif
+	#ifdef APM_DRIVER_SOCKET
+		*next = apm_driver_socket_create();
+		next = &(*next)->next;
+	#endif
 }
 
 static void recursive_free_driver(apm_driver_entry **driver)
@@ -396,7 +396,7 @@ PHP_RSHUTDOWN_FUNCTION(apm)
 PHP_MINFO_FUNCTION(apm)
 {
 	php_info_print_table_start();
-	php_info_print_table_row(2, "APM support", "enabled");
+	php_info_print_table_row(2, "Baidu PHP APM support", "enabled");
 	php_info_print_table_row(2, "Version", PHP_APM_VERSION);
 	php_info_print_table_row(2, "Author", PHP_APM_AUTHOR);
 	php_info_print_table_end();

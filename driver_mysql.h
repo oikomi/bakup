@@ -1,4 +1,9 @@
-
+/*
+ * driver_mysql.h
+ *
+ *  Created on: 13/08/2015
+ *      Author: miaohong(miaohong01@baidu.com)
+ */
 
 #ifndef DRIVER_MYSQL_H
 #define DRIVER_MYSQL_H

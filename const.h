@@ -1,3 +1,10 @@
+/*
+ * const.h
+ *
+ *  Created on: 13/08/2015
+ *      Author: miaohong(miaohong01@baidu.com)
+ */
+
 #ifndef CONST_H
 #define CONST_H
 
