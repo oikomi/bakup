@@ -99,23 +99,23 @@ static void clear_events(TSRMLS_D)
 }
 
 #if PHP_VERSION_ID >= 70000
-# define ZDATA &data
+	#define ZDATA &data
 #else
-# define ZDATA data
+	#define ZDATA data
 #endif
 
 #if PHP_VERSION_ID >= 70000
-# define ADD_Z_DATA(entry, val) \
-	if (APM_RD(val##_found)) { \
-		zval_add_ref(APM_RD(val)); \
-		add_assoc_zval_ex(ZDATA, ZEND_STRL(entry), APM_RD(val)); \
-	}
+	#define ADD_Z_DATA(entry, val) \
+		if (APM_RD(val##_found)) { \
+			zval_add_ref(APM_RD(val)); \
+			add_assoc_zval_ex(ZDATA, ZEND_STRL(entry), APM_RD(val)); \
+		}
 #else
-# define ADD_Z_DATA(entry, val)  \
-	if (APM_RD(val##_found)) { \
-		zval_add_ref(APM_RD(val)); \
-		add_assoc_zval(ZDATA, entry, *(APM_RD(val))); \
-	}
+	#define ADD_Z_DATA(entry, val)  \
+		if (APM_RD(val##_found)) { \
+			zval_add_ref(APM_RD(val)); \
+			add_assoc_zval(ZDATA, entry, *(APM_RD(val))); \
+		}
 #endif
 
 int apm_driver_socket_rshutdown(TSRMLS_D)
@@ -129,11 +129,11 @@ int apm_driver_socket_rshutdown(TSRMLS_D)
 	char *socket_path, *path_copy;
 	struct addrinfo hints, *servinfo;
 	char host[1024], *port;
-#if PHP_VERSION_ID >= 70000
-	zval data, errors;
-#else
-	zval *data, *errors, *tmp;
-#endif
+	#if PHP_VERSION_ID >= 70000
+		zval data, errors;
+	#else
+		zval *data, *errors, *tmp;
+	#endif
 	if (!(APM_G(enabled) && APM_G(socket_enabled))) {
 		return SUCCESS;
 	}
@@ -312,6 +312,7 @@ int apm_driver_socket_rshutdown(TSRMLS_D)
 #endif
 			0) < 0
 		) {
+			//FIXME: error 
 		}
 	}
 
