@@ -4,8 +4,6 @@ backtrace.lo: /mh/phphook/baiduapm/backtrace.c
 	$(LIBTOOL) --mode=compile $(CC)  -I. -I/mh/phphook/baiduapm $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)  -c /mh/phphook/baiduapm/backtrace.c -o backtrace.lo 
 log.lo: /mh/phphook/baiduapm/log.c
 	$(LIBTOOL) --mode=compile $(CC)  -I. -I/mh/phphook/baiduapm $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)  -c /mh/phphook/baiduapm/log.c -o log.lo 
-driver_mysql.lo: /mh/phphook/baiduapm/driver_mysql.c
-	$(LIBTOOL) --mode=compile $(CC)  -I. -I/mh/phphook/baiduapm $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)  -c /mh/phphook/baiduapm/driver_mysql.c -o driver_mysql.lo 
 driver_socket.lo: /mh/phphook/baiduapm/driver_socket.c
 	$(LIBTOOL) --mode=compile $(CC)  -I. -I/mh/phphook/baiduapm $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)  -c /mh/phphook/baiduapm/driver_socket.c -o driver_socket.lo 
 $(phplibdir)/apm.la: ./apm.la

@@ -209,6 +209,7 @@ static PHP_GINIT_FUNCTION(apm)
 {
 	apm_driver_entry **next;
 	apm_globals->buffer = NULL;
+	// init drivers 
 	apm_globals->drivers = (apm_driver_entry *) malloc(sizeof(apm_driver_entry));
 	apm_globals->drivers->driver.process_event = (void (*)(PROCESS_EVENT_ARGS)) NULL;
 	apm_globals->drivers->driver.process_stats = (void (*)(TSRMLS_D)) NULL;
@@ -294,6 +295,7 @@ PHP_MSHUTDOWN_FUNCTION(apm)
 	}
 
 	/* Restoring saved error callback function */
+	// 
 	zend_error_cb = old_error_cb;
 
 	return SUCCESS;
@@ -304,6 +306,10 @@ PHP_RINIT_FUNCTION(apm)
 	apm_driver_entry * driver_entry;
 
 	APM_INIT_DEBUG;
+
+	//file record
+	APM_INIT_FILE_RECORD;
+
 	if (APM_G(enabled)) {
 		memset(&APM_G(request_data), 0, sizeof(struct apm_request_data));
 		if (APM_G(event_enabled)) {
@@ -378,6 +384,12 @@ PHP_RSHUTDOWN_FUNCTION(apm)
 						driver_entry->driver.process_stats(TSRMLS_C);
 					}
 				}
+				// add file recore
+				do_file_record_stats();
+
+				//end file record
+
+
 				APM_DEBUG("Stats loop end\n");
 			}
 		}
@@ -401,6 +413,10 @@ PHP_RSHUTDOWN_FUNCTION(apm)
 	}
 
 	APM_SHUTDOWN_DEBUG;
+
+	//shutdown record
+	APM_SHUTDOWN_RECODE;
+
 
 	return code;
 }
@@ -544,12 +560,43 @@ void extract_data()
 
 		// add res status
 		REGISTER_INFO("REDIRECT_STATUS", status, IS_STRING);
-		
+
 		if (APM_G(store_ip)) {
 			REGISTER_INFO("REMOTE_ADDR", ip, IS_STRING);
 		}
+
+		//do record file 
+
+		char *record_buf = emalloc(1000);
+		sprintf(
+			record_buf,
+			"%s, %s, %s, %s, %s, %f",
+			
+			APM_RD_STRVAL(uri),
+			APM_RD_STRVAL(host),
+			APM_RD_STRVAL(ip),
+			APM_RD_STRVAL(method),
+			APM_RD_STRVAL(status),
+			APM_G(duration)/1000.0);
+
+			// APM_RD(host_found) ? host_esc : "",
+			// APM_RD(cookies_found) ? cookies_esc : "",
+			// APM_RD(post_vars_found) ? post_vars_esc : "",
+			// APM_RD(referer_found) ? referer_esc : "",
+			// APM_RD(method_found) ? method_esc : "",
+			// APM_RD(status_found) ? status_esc : "");
+
+		APM_DEBUG(record_buf);
+		efree(record_buf);
+
+		//end do record file 
+
+		
+		
+
 	}
 	if (APM_G(store_cookies)) {
+		APM_DEBUG("need to store_cookies\n");
 		zend_is_auto_global_compat("_COOKIE");
 		if (FETCH_HTTP_GLOBALS(COOKIE)) {
 			if (Z_ARRVAL_P(tmp)->nNumOfElements > 0) {
@@ -560,6 +607,7 @@ void extract_data()
 		}
 	}
 	if (APM_G(store_post)) {
+		APM_DEBUG("need to store_post\n");
 		zend_is_auto_global_compat("_POST");
 		if (FETCH_HTTP_GLOBALS(POST)) {
 			if (Z_ARRVAL_P(tmp)->nNumOfElements > 0) {
@@ -570,3 +618,15 @@ void extract_data()
 		}
 	}
 }
+
+
+void do_file_record_stats() {
+	extract_data();
+}
+void do_file_record_events() {
+
+}
+
+
+
+

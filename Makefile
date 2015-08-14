@@ -4,19 +4,16 @@ top_srcdir = /mh/phphook/baiduapm
 top_builddir = /mh/phphook/baiduapm
 EGREP = /bin/grep -E
 SED = /bin/sed
-CONFIGURE_COMMAND = './configure' '--with-debugfile=/tmp/baidu.log'
-CONFIGURE_OPTIONS = '--with-debugfile=/tmp/baidu.log'
+CONFIGURE_COMMAND = './configure' '--without-mysql' '--with-debugfile=/tmp/baidu.log'
+CONFIGURE_OPTIONS = '--without-mysql' '--with-debugfile=/tmp/baidu.log'
 SHLIB_SUFFIX_NAME = so
 SHLIB_DL_SUFFIX_NAME = so
 ZEND_EXT_TYPE = zend_extension
 RE2C = exit 0;
 AWK = gawk
-MYSQL_MODULE_TYPE = external
-MYSQL_LIBS = -L/usr/lib/x86_64-linux-gnu -lmysqlclient
-MYSQL_INCLUDE = -I/usr/include/mysql
-shared_objects_apm = apm.lo backtrace.lo log.lo driver_mysql.lo driver_socket.lo
+shared_objects_apm = apm.lo backtrace.lo log.lo driver_socket.lo
 PHP_PECL_EXTENSION = apm
-APM_SHARED_LIBADD = -Wl,-rpath,/usr/lib/x86_64-linux-gnu -L/usr/lib/x86_64-linux-gnu -lmysqlclient
+APM_SHARED_LIBADD =
 PHP_MODULES = $(phplibdir)/apm.la
 PHP_ZEND_EX =
 all_targets = $(PHP_MODULES) $(PHP_ZEND_EX)
@@ -39,7 +36,7 @@ EXTENSION_DIR = /mh/phphook/php/lib/php/extensions/no-debug-non-zts-20121212
 PHP_EXECUTABLE = /mh/phphook/php/bin/php
 EXTRA_LDFLAGS =
 EXTRA_LIBS =
-INCLUDES = -I/mh/phphook/php/include/php -I/mh/phphook/php/include/php/main -I/mh/phphook/php/include/php/TSRM -I/mh/phphook/php/include/php/Zend -I/mh/phphook/php/include/php/ext -I/mh/phphook/php/include/php/ext/date/lib -I/usr/include/mysql
+INCLUDES = -I/mh/phphook/php/include/php -I/mh/phphook/php/include/php/main -I/mh/phphook/php/include/php/TSRM -I/mh/phphook/php/include/php/Zend -I/mh/phphook/php/include/php/ext -I/mh/phphook/php/include/php/ext/date/lib
 LFLAGS =
 LDFLAGS =
 SHARED_LIBTOOL =
@@ -186,8 +183,6 @@ backtrace.lo: /mh/phphook/baiduapm/backtrace.c
 	$(LIBTOOL) --mode=compile $(CC)  -I. -I/mh/phphook/baiduapm $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)  -c /mh/phphook/baiduapm/backtrace.c -o backtrace.lo 
 log.lo: /mh/phphook/baiduapm/log.c
 	$(LIBTOOL) --mode=compile $(CC)  -I. -I/mh/phphook/baiduapm $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)  -c /mh/phphook/baiduapm/log.c -o log.lo 
-driver_mysql.lo: /mh/phphook/baiduapm/driver_mysql.c
-	$(LIBTOOL) --mode=compile $(CC)  -I. -I/mh/phphook/baiduapm $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)  -c /mh/phphook/baiduapm/driver_mysql.c -o driver_mysql.lo 
 driver_socket.lo: /mh/phphook/baiduapm/driver_socket.c
 	$(LIBTOOL) --mode=compile $(CC)  -I. -I/mh/phphook/baiduapm $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)  -c /mh/phphook/baiduapm/driver_socket.c -o driver_socket.lo 
 $(phplibdir)/apm.la: ./apm.la

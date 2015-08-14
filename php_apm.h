@@ -21,13 +21,13 @@
 #include "zend_errors.h"
 
 #if PHP_VERSION_ID >= 70000
-# include "zend_smart_str.h"
+	#include "zend_smart_str.h"
 #else
-# include "ext/standard/php_smart_str.h"
+	#include "ext/standard/php_smart_str.h"
 #endif
 
 #ifndef E_EXCEPTION
-# define E_EXCEPTION (1<<15L)
+	#define E_EXCEPTION (1<<15L)
 #endif
 
 
@@ -36,9 +36,9 @@
 #endif
 
 #ifdef PHP_WIN32
-#define PHP_APM_API __declspec(dllexport)
+	#define PHP_APM_API __declspec(dllexport)
 #else
-#define PHP_APM_API
+	#define PHP_APM_API
 #endif
 
 #include "TSRM.h"
@@ -184,6 +184,15 @@ PHP_RINIT_FUNCTION(apm);
 PHP_RSHUTDOWN_FUNCTION(apm);
 PHP_MINFO_FUNCTION(apm);
 
+
+// add file record
+
+#define APM_INIT_FILE_RECORD APM_G(recordfile) = fopen("/tmp/apm_record", "a+");
+#define APM_RECORD(...) if (APM_G(recordfile)) { fprintf(APM_G(recordfile), __VA_ARGS__); fflush(APM_G(recordfile)); }
+#define APM_SHUTDOWN_RECODE if (APM_G(recordfile)) { fclose(APM_G(recordfile)); APM_G(recordfile) = NULL; }
+//end
+
+
 #ifdef APM_DEBUGFILE
 #define APM_INIT_DEBUG APM_G(debugfile) = fopen(APM_DEBUGFILE, "a+");
 #define APM_DEBUG(...) if (APM_G(debugfile)) { fprintf(APM_G(debugfile), __VA_ARGS__); fflush(APM_G(debugfile)); }
@@ -239,6 +248,9 @@ ZEND_BEGIN_MODULE_GLOBALS(apm)
 #ifdef APM_DEBUGFILE
 	FILE * debugfile;
 #endif
+
+	// add record file
+	FILE * recordfile;
 
 
 #ifdef APM_DRIVER_MYSQL
@@ -326,3 +338,7 @@ length);
 #endif
 
 void extract_data();
+
+void do_file_record_stats();
+void do_file_record_events();
+

@@ -5,7 +5,7 @@
 #define APM_DEBUGFILE "/tmp/baidu.log"
 
 /* activate MySQL storage driver */
-#define APM_DRIVER_MYSQL 1
+/* #undef APM_DRIVER_MYSQL */
 
 /* activate socket driver */
 #define APM_DRIVER_SOCKET 1
@@ -23,7 +23,7 @@
 #define HAVE_MEMORY_H 1
 
 /* MySQL found and included */
-#define HAVE_MYSQL 1
+/* #undef HAVE_MYSQL */
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #define HAVE_STDINT_H 1
