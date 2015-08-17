@@ -185,11 +185,19 @@ PHP_RSHUTDOWN_FUNCTION(apm);
 PHP_MINFO_FUNCTION(apm);
 
 
-// add file record
+// add file stats record
 
-#define APM_INIT_FILE_RECORD APM_G(recordfile) = fopen("/tmp/apm_record", "a+");
-#define APM_RECORD(...) if (APM_G(recordfile)) { fprintf(APM_G(recordfile), __VA_ARGS__); fflush(APM_G(recordfile)); }
-#define APM_SHUTDOWN_RECODE if (APM_G(recordfile)) { fclose(APM_G(recordfile)); APM_G(recordfile) = NULL; }
+#define APM_INIT_FILE_STATS_RECORD APM_G(recordfilestats) = fopen(FILE_RECORD_STATS, "a+");
+#define APM_RECORD_STATS(...) if (APM_G(recordfilestats)) { fprintf(APM_G(recordfilestats), __VA_ARGS__); fflush(APM_G(recordfilestats)); }
+#define APM_SHUTDOWN_FILE_STATS_RECODE if (APM_G(recordfilestats)) { fclose(APM_G(recordfilestats)); APM_G(recordfilestats) = NULL; }
+//end
+
+// add file events record
+
+#define APM_INIT_FILE_EVENTS_RECORD APM_G(recordfileevents) = fopen(FILE_RECORD_EVENTS, "a+");
+#define APM_RECORD_EVENTS(...) if (APM_G(recordfileevents)) { fprintf(APM_G(recordfileevents), __VA_ARGS__); fflush(APM_G(recordfileevents)); }
+#define APM_SHUTDOWN_FILE_EVENTS_RECODE if (APM_G(recordfileevents)) { fclose(APM_G(recordfileevents)); APM_G(recordfileevents) = NULL; }
+
 //end
 
 
@@ -250,7 +258,8 @@ ZEND_BEGIN_MODULE_GLOBALS(apm)
 #endif
 
 	// add record file
-	FILE * recordfile;
+	FILE * recordfilestats;
+	FILE * recordfileevents;
 
 
 #ifdef APM_DRIVER_MYSQL

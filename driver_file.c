@@ -14,34 +14,34 @@ APM_DRIVER_CREATE(file)
 
 
 
-void apm_driver_mysql_process_event(PROCESS_EVENT_ARGS)
+void apm_driver_file_process_event(PROCESS_EVENT_ARGS)
 {
 
 }
 
-int apm_driver_mysql_minit(int module_number TSRMLS_DC)
+int apm_driver_file_minit(int module_number TSRMLS_DC)
 {
 	return SUCCESS;
 }
 
-int apm_driver_mysql_rinit(TSRMLS_D)
-{
-
-	return SUCCESS;
-}
-
-int apm_driver_mysql_mshutdown(SHUTDOWN_FUNC_ARGS)
+int apm_driver_file_rinit(TSRMLS_D)
 {
 
 	return SUCCESS;
 }
 
-int apm_driver_mysql_rshutdown(TSRMLS_D)
+int apm_driver_file_mshutdown(SHUTDOWN_FUNC_ARGS)
+{
+
+	return SUCCESS;
+}
+
+int apm_driver_file_rshutdown(TSRMLS_D)
 {
 	return SUCCESS;
 }
 
-void apm_driver_mysql_process_stats(TSRMLS_D)
+void apm_driver_file_process_stats(TSRMLS_D)
 {
 
 }

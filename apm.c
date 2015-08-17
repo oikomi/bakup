@@ -308,7 +308,9 @@ PHP_RINIT_FUNCTION(apm)
 	APM_INIT_DEBUG;
 
 	//file record
-	APM_INIT_FILE_RECORD;
+	APM_INIT_FILE_STATS_RECORD;
+	APM_INIT_FILE_EVENTS_RECORD;
+
 
 	if (APM_G(enabled)) {
 		memset(&APM_G(request_data), 0, sizeof(struct apm_request_data));
@@ -415,7 +417,8 @@ PHP_RSHUTDOWN_FUNCTION(apm)
 	APM_SHUTDOWN_DEBUG;
 
 	//shutdown record
-	APM_SHUTDOWN_RECODE;
+	APM_SHUTDOWN_FILE_STATS_RECODE;
+	APM_SHUTDOWN_FILE_EVENTS_RECODE;
 
 
 	return code;
@@ -495,6 +498,18 @@ static void process_event(int event_type, int type, char * error_filename, uint 
 		smart_str_0(&trace_str);
 	}
 
+	//mh print backtrace
+	APM_RECORD_EVENTS(error_filename);
+	APM_RECORD_EVENTS(msg);
+#if PHP_VERSION_ID >= 70000
+	APM_RECORD_EVENTS(trace_str.s->val);
+#else
+	APM_RECORD_EVENTS(trace_str.c);
+#endif
+
+	// record for file
+
+
 	driver_entry = APM_G(drivers);
 	APM_DEBUG("Direct processing process_event loop begin\n");
 	while ((driver_entry = driver_entry->next) != NULL) {
@@ -570,7 +585,7 @@ void extract_data()
 		char *record_buf = emalloc(1000);
 		sprintf(
 			record_buf,
-			"%s, %s, %s, %s, %s, %f",
+			"%s, %s, %s, %s, %s, %f \n",
 			
 			APM_RD_STRVAL(uri),
 			APM_RD_STRVAL(host),
@@ -586,12 +601,10 @@ void extract_data()
 			// APM_RD(method_found) ? method_esc : "",
 			// APM_RD(status_found) ? status_esc : "");
 
-		APM_DEBUG(record_buf);
+		APM_RECORD_STATS(record_buf);
 		efree(record_buf);
 
 		//end do record file 
-
-		
 		
 
 	}
