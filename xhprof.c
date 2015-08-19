@@ -27,7 +27,7 @@
 #include "php.h"
 #include "php_ini.h"
 #include "ext/standard/info.h"
-#include "php_xhprof.h"
+#include "xhprof.h"
 #include "zend_extensions.h"
 #include <sys/time.h>
 #include <sys/resource.h>

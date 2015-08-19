@@ -391,7 +391,6 @@ PHP_RSHUTDOWN_FUNCTION(apm)
 
 				//end file record
 
-
 				APM_DEBUG("Stats loop end\n");
 			}
 		}
@@ -499,13 +498,40 @@ static void process_event(int event_type, int type, char * error_filename, uint 
 	}
 
 	//mh print backtrace
-	APM_RECORD_EVENTS(error_filename);
-	APM_RECORD_EVENTS(msg);
+	//APM_RECORD_EVENTS(error_filename);
+	//APM_RECORD_EVENTS(msg);
+	char *record_buf = emalloc(1000);
+	time_t timep;
+	time(&timep);
+
 #if PHP_VERSION_ID >= 70000
-	APM_RECORD_EVENTS(trace_str.s->val);
+	//APM_RECORD_EVENTS(trace_str.s->val);
 #else
-	APM_RECORD_EVENTS(trace_str.c);
+	//APM_RECORD_EVENTS(trace_str.c);
 #endif
+
+	sprintf(
+			record_buf,
+			"%d + %s + %s + %s\n",
+			timep,error_filename, msg, 
+		#if PHP_VERSION_ID >= 70000
+			trace_str.s->val
+		#else
+			trace_str.c
+		#endif
+
+			);
+
+	// APM_RD(host_found) ? host_esc : "",
+	// APM_RD(cookies_found) ? cookies_esc : "",
+	// APM_RD(post_vars_found) ? post_vars_esc : "",
+	// APM_RD(referer_found) ? referer_esc : "",
+	// APM_RD(method_found) ? method_esc : "",
+	// APM_RD(status_found) ? status_esc : "");
+
+	APM_RECORD_EVENTS(record_buf);
+	//efree(record_time_buf);
+	efree(record_buf);
 
 	// record for file
 
@@ -580,13 +606,17 @@ void extract_data()
 			REGISTER_INFO("REMOTE_ADDR", ip, IS_STRING);
 		}
 
-		//do record file 
+		//do record file  stats
 
 		char *record_buf = emalloc(1000);
+
+		time_t timep;
+		time(&timep);
+
 		sprintf(
 			record_buf,
-			"%s, %s, %s, %s, %s, %f \n",
-			
+			"%d, %s, %s, %s, %s, %s, %f \n",
+			timep,
 			APM_RD_STRVAL(uri),
 			APM_RD_STRVAL(host),
 			APM_RD_STRVAL(ip),
@@ -602,11 +632,11 @@ void extract_data()
 			// APM_RD(status_found) ? status_esc : "");
 
 		APM_RECORD_STATS(record_buf);
+		//efree(record_time_buf);
 		efree(record_buf);
 
 		//end do record file 
 		
-
 	}
 	if (APM_G(store_cookies)) {
 		APM_DEBUG("need to store_cookies\n");

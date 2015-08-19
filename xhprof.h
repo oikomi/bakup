@@ -31,15 +31,15 @@ extern zend_module_entry xhprof_module_entry;
 #include "TSRM.h"
 #endif
 
-PHP_MINIT_FUNCTION(xhprof);
-PHP_MSHUTDOWN_FUNCTION(xhprof);
-PHP_RINIT_FUNCTION(xhprof);
-PHP_RSHUTDOWN_FUNCTION(xhprof);
-PHP_MINFO_FUNCTION(xhprof);
+// PHP_MINIT_FUNCTION(xhprof);
+// PHP_MSHUTDOWN_FUNCTION(xhprof);
+// PHP_RINIT_FUNCTION(xhprof);
+// PHP_RSHUTDOWN_FUNCTION(xhprof);
+// PHP_MINFO_FUNCTION(xhprof);
 
-PHP_FUNCTION(xhprof_enable);
-PHP_FUNCTION(xhprof_disable);
-PHP_FUNCTION(xhprof_sample_enable);
-PHP_FUNCTION(xhprof_sample_disable);
+// PHP_FUNCTION(xhprof_enable);
+// PHP_FUNCTION(xhprof_disable);
+// PHP_FUNCTION(xhprof_sample_enable);
+// PHP_FUNCTION(xhprof_sample_disable);
 
 #endif	/* PHP_XHPROF_H */
