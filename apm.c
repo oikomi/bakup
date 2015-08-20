@@ -615,14 +615,18 @@ void extract_data()
 
 		sprintf(
 			record_buf,
-			"%d, %s, %s, %s, %s, %s, %f \n",
+			"%d, %s, %s, %s, %s, %s, %f, %f, %f, %ld\n",
 			timep,
 			APM_RD_STRVAL(uri),
 			APM_RD_STRVAL(host),
 			APM_RD_STRVAL(ip),
 			APM_RD_STRVAL(method),
 			APM_RD_STRVAL(status),
-			APM_G(duration)/1000.0);
+			APM_G(duration)/1000.0,
+
+			USEC_TO_SEC(APM_G(user_cpu)),
+			USEC_TO_SEC(APM_G(sys_cpu)),
+			APM_G(mem_peak_usage));
 
 			// APM_RD(host_found) ? host_esc : "",
 			// APM_RD(cookies_found) ? cookies_esc : "",

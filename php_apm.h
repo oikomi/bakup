@@ -45,6 +45,10 @@
 
 #include "TSRM.h"
 
+ //mh add 
+
+ #define HAVE_GETRUSAGE 1
+
 #define APM_E_ALL (E_ALL | E_STRICT)
 
 #define APM_EVENT_ERROR 1

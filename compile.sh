@@ -6,6 +6,8 @@ phpize
 
 ./configure  --without-mysql  --with-debugfile=/tmp/baidu.log
 
+#./configure   --with-debugfile=/tmp/baidu.log
+
 make && make install
 
 pkill php-fpm
