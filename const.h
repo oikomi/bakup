@@ -12,8 +12,10 @@
 #define PHP_APM_NAME    "apm"
 #define PHP_APM_AUTHOR  "APM Team"
 
-#define FILE_RECORD_STATS "/tmp/apm_file_record_stats"
+#define FILE_RECORD_STATS "/tmp/.apm_file_record_stats"
 
-#define FILE_RECORD_EVENTS "/tmp/apm_file_record_events"
+#define FILE_RECORD_EVENTS "/tmp/.apm_file_record_events"
+
+#define FILE_RECORD_TRACE "/tmp/.apm_file_record_trace"
 
 #endif

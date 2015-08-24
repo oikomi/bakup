@@ -138,6 +138,25 @@ if test "$PHP_APM" != "no"; then
     AC_DEFINE(APM_DRIVER_SOCKET, 1, [activate socket driver])
   fi
 
-  PHP_NEW_EXTENSION(apm, apm.c backtrace.c log.c  $mysql_driver  $socket_driver, $ext_shared)
+
+
+
+  PHP_TRACE_COMMON_FILES="\
+    common/trace_comm.c \
+    common/trace_ctrl.c \
+    common/trace_mmap.c \
+    common/trace_type.c \
+    common/sds/sds.c"
+
+  PHP_NEW_EXTENSION(apm, apm.c backtrace.c log.c $PHP_TRACE_COMMON_FILES $mysql_driver  $socket_driver, $ext_shared)
+
+  dnl configure can't use ".." as a source filename, so we make a link here
+  ln -sf ./common $ext_srcdir
+
+  dnl add common include path
+  PHP_ADD_INCLUDE($ext_srcdir)
+
+  PHP_ADD_MAKEFILE_FRAGMENT
+
   PHP_SUBST(APM_SHARED_LIBADD)
 fi

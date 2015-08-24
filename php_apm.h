@@ -47,6 +47,15 @@
 
  //mh add 
 
+#include "common/trace_time.h"
+#include "common/trace_type.h"
+#include "common/trace_ctrl.h"
+ #include "common/trace_comm.h"
+#include "common/sds/sds.h"
+
+ #include "zend_extensions.h"
+#include "SAPI.h"
+
  #define HAVE_GETRUSAGE 1
 
 #define APM_E_ALL (E_ALL | E_STRICT)
@@ -206,6 +215,15 @@ PHP_MINFO_FUNCTION(apm);
 
 //end
 
+// add file trace record
+
+#define APM_INIT_FILE_TRACE_RECORD APM_G(recordfiletrace) = fopen(FILE_RECORD_TRACE, "a+");
+#define APM_RECORD_TRACE(...) if (APM_G(recordfiletrace)) { fprintf(APM_G(recordfiletrace), __VA_ARGS__); fflush(APM_G(recordfiletrace)); }
+#define APM_SHUTDOWN_FILE_TRACE_RECODE if (APM_G(recordfiletrace)) { fclose(APM_G(recordfiletrace)); APM_G(recordfiletrace) = NULL; }
+
+//end
+
+#define APM_DEBUGFILE "/tmp/baidu.log"
 
 #ifdef APM_DEBUGFILE
 #define APM_INIT_DEBUG APM_G(debugfile) = fopen(APM_DEBUGFILE, "a+");
@@ -266,6 +284,7 @@ ZEND_BEGIN_MODULE_GLOBALS(apm)
 	// add record file
 	FILE * recordfilestats;
 	FILE * recordfileevents;
+	FILE * recordfiletrace;
 
 
 #ifdef APM_DRIVER_MYSQL
@@ -313,6 +332,28 @@ ZEND_BEGIN_MODULE_GLOBALS(apm)
 	apm_event_entry *socket_events;
 	apm_event_entry **socket_last_event;
 #endif
+
+
+
+	// mh add for phptrace
+
+    pid_t                   pid;            /* process id */
+    long                    level;          /* nesting level */
+
+    long                    ping;           /* last ping time (second) */
+    long                    idle_timeout;   /* idle timeout, for current - last ping */
+
+    long                    dotrace;        /* flags of trace */
+
+    //char                    *data_dir;      /* data path, should be writable */
+
+    //pt_ctrl_t               ctrl;           /* ctrl module */
+    //char                    ctrl_file[256]; /* ctrl filename */
+
+    //pt_comm_socket_t        comm;           /* comm module */
+    //char                    comm_file[256]; /* comm filename */
+
+	//mh add end
 ZEND_END_MODULE_GLOBALS(apm)
 
 #ifdef ZTS
@@ -320,6 +361,16 @@ ZEND_END_MODULE_GLOBALS(apm)
 #else
 #define APM_G(v) (apm_globals.v)
 #endif
+
+
+
+#ifdef ZTS
+#define PTG(v) TSRMG(apm_globals_id, zend_apm_globals *, v)
+#else
+#define PTG(v) (apm_globals.v)
+#endif
+
+
 
 #define APM_RD(data) APM_G(request_data).data
 
@@ -356,4 +407,37 @@ void extract_data();
 
 void do_file_record_stats();
 void do_file_record_events();
+
+
+//mh add
+
+
+static void pt_frame_build(pt_frame_t *frame, zend_bool internal, unsigned char type, zend_execute_data *ex, zend_op_array *op_array TSRMLS_DC);
+static void pt_frame_destroy(pt_frame_t *frame TSRMLS_DC);
+static void pt_frame_display(pt_frame_t *frame TSRMLS_DC, zend_bool indent, const char *format, ...);
+static int pt_frame_send(pt_frame_t *frame TSRMLS_DC);
+static void pt_frame_set_retval(pt_frame_t *frame, zend_bool internal, zend_execute_data *ex, zend_fcall_info *fci TSRMLS_DC);
+
+static void pt_status_build(pt_status_t *status, zend_bool internal, zend_execute_data *ex TSRMLS_DC);
+static void pt_status_destroy(pt_status_t *status TSRMLS_DC);
+static void pt_status_display(pt_status_t *status TSRMLS_DC);
+static int pt_status_send(pt_status_t *status TSRMLS_DC);
+
+static sds pt_repr_zval(zval *zv, int limit TSRMLS_DC);
+static void pt_set_inactive(TSRMLS_D);
+
+#if PHP_VERSION_ID < 50500
+static void (*pt_ori_execute)(zend_op_array *op_array TSRMLS_DC);
+static void (*pt_ori_execute_internal)(zend_execute_data *execute_data_ptr, int return_value_used TSRMLS_DC);
+ZEND_API void pt_execute(zend_op_array *op_array TSRMLS_DC);
+ZEND_API void pt_execute_internal(zend_execute_data *execute_data, int return_value_used TSRMLS_DC);
+#else
+static void (*pt_ori_execute_ex)(zend_execute_data *execute_data TSRMLS_DC);
+static void (*pt_ori_execute_internal)(zend_execute_data *execute_data_ptr, zend_fcall_info *fci, int return_value_used TSRMLS_DC);
+ZEND_API void pt_execute_ex(zend_execute_data *execute_data TSRMLS_DC);
+ZEND_API void pt_execute_internal(zend_execute_data *execute_data, zend_fcall_info *fci, int return_value_used TSRMLS_DC);
+#endif
+
+
+// mh add end
 

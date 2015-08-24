@@ -296,9 +296,9 @@ m4trace:config.m4:138: -1- AC_DEFINE_TRACE_LITERAL([APM_DRIVER_SOCKET])
 m4trace:config.m4:138: -1- m4_pattern_allow([^APM_DRIVER_SOCKET$])
 m4trace:config.m4:138: -1- AH_OUTPUT([APM_DRIVER_SOCKET], [/* activate socket driver */
 @%:@undef APM_DRIVER_SOCKET])
-m4trace:config.m4:141: -1- AC_DEFINE_TRACE_LITERAL([COMPILE_DL_APM])
-m4trace:config.m4:141: -1- m4_pattern_allow([^COMPILE_DL_APM$])
-m4trace:config.m4:141: -1- AH_OUTPUT([COMPILE_DL_APM], [/* Whether to build apm as dynamic module */
+m4trace:config.m4:151: -1- AC_DEFINE_TRACE_LITERAL([COMPILE_DL_APM])
+m4trace:config.m4:151: -1- m4_pattern_allow([^COMPILE_DL_APM$])
+m4trace:config.m4:151: -1- AH_OUTPUT([COMPILE_DL_APM], [/* Whether to build apm as dynamic module */
 @%:@undef COMPILE_DL_APM])
 m4trace:configure.in:149: -1- AC_PROG_LIBTOOL
 m4trace:configure.in:149: -1- AC_SUBST([LN_S], [$as_ln_s])

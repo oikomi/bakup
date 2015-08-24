@@ -11,7 +11,7 @@ SHLIB_DL_SUFFIX_NAME = so
 ZEND_EXT_TYPE = zend_extension
 RE2C = exit 0;
 AWK = gawk
-shared_objects_apm = apm.lo backtrace.lo log.lo driver_socket.lo
+shared_objects_apm = apm.lo backtrace.lo log.lo common/trace_comm.lo common/trace_ctrl.lo common/trace_mmap.lo common/trace_type.lo common/sds/sds.lo driver_socket.lo
 PHP_PECL_EXTENSION = apm
 APM_SHARED_LIBADD =
 PHP_MODULES = $(phplibdir)/apm.la
@@ -36,7 +36,7 @@ EXTENSION_DIR = /mh/phphook/php/lib/php/extensions/no-debug-non-zts-20121212
 PHP_EXECUTABLE = /mh/phphook/php/bin/php
 EXTRA_LDFLAGS =
 EXTRA_LIBS =
-INCLUDES = -I/mh/phphook/php/include/php -I/mh/phphook/php/include/php/main -I/mh/phphook/php/include/php/TSRM -I/mh/phphook/php/include/php/Zend -I/mh/phphook/php/include/php/ext -I/mh/phphook/php/include/php/ext/date/lib
+INCLUDES = -I/mh/phphook/php/include/php -I/mh/phphook/php/include/php/main -I/mh/phphook/php/include/php/TSRM -I/mh/phphook/php/include/php/Zend -I/mh/phphook/php/include/php/ext -I/mh/phphook/php/include/php/ext/date/lib -I/mh/phphook/baiduapm
 LFLAGS =
 LDFLAGS =
 SHARED_LIBTOOL =
@@ -183,6 +183,16 @@ backtrace.lo: /mh/phphook/baiduapm/backtrace.c
 	$(LIBTOOL) --mode=compile $(CC)  -I. -I/mh/phphook/baiduapm $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)  -c /mh/phphook/baiduapm/backtrace.c -o backtrace.lo 
 log.lo: /mh/phphook/baiduapm/log.c
 	$(LIBTOOL) --mode=compile $(CC)  -I. -I/mh/phphook/baiduapm $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)  -c /mh/phphook/baiduapm/log.c -o log.lo 
+common/trace_comm.lo: /mh/phphook/baiduapm/common/trace_comm.c
+	$(LIBTOOL) --mode=compile $(CC)  -I. -I/mh/phphook/baiduapm $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)  -c /mh/phphook/baiduapm/common/trace_comm.c -o common/trace_comm.lo 
+common/trace_ctrl.lo: /mh/phphook/baiduapm/common/trace_ctrl.c
+	$(LIBTOOL) --mode=compile $(CC)  -I. -I/mh/phphook/baiduapm $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)  -c /mh/phphook/baiduapm/common/trace_ctrl.c -o common/trace_ctrl.lo 
+common/trace_mmap.lo: /mh/phphook/baiduapm/common/trace_mmap.c
+	$(LIBTOOL) --mode=compile $(CC)  -I. -I/mh/phphook/baiduapm $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)  -c /mh/phphook/baiduapm/common/trace_mmap.c -o common/trace_mmap.lo 
+common/trace_type.lo: /mh/phphook/baiduapm/common/trace_type.c
+	$(LIBTOOL) --mode=compile $(CC)  -I. -I/mh/phphook/baiduapm $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)  -c /mh/phphook/baiduapm/common/trace_type.c -o common/trace_type.lo 
+common/sds/sds.lo: /mh/phphook/baiduapm/common/sds/sds.c
+	$(LIBTOOL) --mode=compile $(CC)  -I. -I/mh/phphook/baiduapm $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)  -c /mh/phphook/baiduapm/common/sds/sds.c -o common/sds/sds.lo 
 driver_socket.lo: /mh/phphook/baiduapm/driver_socket.c
 	$(LIBTOOL) --mode=compile $(CC)  -I. -I/mh/phphook/baiduapm $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)  -c /mh/phphook/baiduapm/driver_socket.c -o driver_socket.lo 
 $(phplibdir)/apm.la: ./apm.la

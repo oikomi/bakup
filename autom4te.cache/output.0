@@ -5073,6 +5073,16 @@ $as_echo "@%:@define APM_DRIVER_SOCKET 1" >>confdefs.h
 
   fi
 
+
+
+
+  PHP_TRACE_COMMON_FILES="\
+    common/trace_comm.c \
+    common/trace_ctrl.c \
+    common/trace_mmap.c \
+    common/trace_type.c \
+    common/sds/sds.c"
+
   
   ext_builddir=.
   ext_srcdir=$abs_srcdir
@@ -5101,7 +5111,7 @@ $as_echo "@%:@define APM_DRIVER_SOCKET 1" >>confdefs.h
 
 
   old_IFS=$IFS
-  for ac_src in apm.c backtrace.c log.c  $mysql_driver  $socket_driver; do
+  for ac_src in apm.c backtrace.c log.c $PHP_TRACE_COMMON_FILES $mysql_driver  $socket_driver; do
   
       IFS=.
       set $ac_src
@@ -5150,7 +5160,7 @@ EOF
 
 
   old_IFS=$IFS
-  for ac_src in apm.c backtrace.c log.c  $mysql_driver  $socket_driver; do
+  for ac_src in apm.c backtrace.c log.c $PHP_TRACE_COMMON_FILES $mysql_driver  $socket_driver; do
   
       IFS=.
       set $ac_src
@@ -5280,7 +5290,7 @@ _ACEOF
 
 
   old_IFS=$IFS
-  for ac_src in apm.c backtrace.c log.c  $mysql_driver  $socket_driver; do
+  for ac_src in apm.c backtrace.c log.c $PHP_TRACE_COMMON_FILES $mysql_driver  $socket_driver; do
   
       IFS=.
       set $ac_src
@@ -5326,7 +5336,7 @@ EOF
 
 
   old_IFS=$IFS
-  for ac_src in apm.c backtrace.c log.c  $mysql_driver  $socket_driver; do
+  for ac_src in apm.c backtrace.c log.c $PHP_TRACE_COMMON_FILES $mysql_driver  $socket_driver; do
   
       IFS=.
       set $ac_src
@@ -5365,6 +5375,48 @@ EOF
   PHP_VAR_SUBST="$PHP_VAR_SUBST PHP_PECL_EXTENSION"
 
   fi
+
+
+    ln -sf ./common $ext_srcdir
+
+    
+  if test "$ext_srcdir" != "/usr/include"; then
+    
+  if test -z "$ext_srcdir" || echo "$ext_srcdir" | grep '^/' >/dev/null ; then
+    ai_p=$ext_srcdir
+  else
+    
+    ep_dir=`echo $ext_srcdir|$SED 's%/*[^/][^/]*/*$%%'`
+    
+    ep_realdir=`(cd "$ep_dir" && pwd)`
+    ai_p="$ep_realdir"/`basename "$ext_srcdir"`
+  fi
+
+    
+  
+  unique=`echo $ai_p|$SED 's/[^a-zA-Z0-9]/_/g'`
+  
+  cmd="echo $ac_n \"\$INCLUDEPATH$unique$ac_c\""
+  if test -n "$unique" && test "`eval $cmd`" = "" ; then
+    eval "INCLUDEPATH$unique=set"
+    
+      if test ""; then
+        INCLUDES="-I$ai_p $INCLUDES"
+      else
+        INCLUDES="$INCLUDES -I$ai_p"
+      fi
+    
+  fi
+
+  fi
+
+
+  
+  src=$ext_srcdir/Makefile.frag
+  ac_srcdir=$ext_srcdir
+  ac_builddir=$ext_builddir
+  test -f "$src" && $SED -e "s#\$(srcdir)#$ac_srcdir#g" -e "s#\$(builddir)#$ac_builddir#g" $src  >> Makefile.fragments
+
 
   
   PHP_VAR_SUBST="$PHP_VAR_SUBST APM_SHARED_LIBADD"
