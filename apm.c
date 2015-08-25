@@ -307,9 +307,8 @@ PHP_MINIT_FUNCTION(apm)
 
 	REGISTER_INI_ENTRIES();
 
-
 	// mh add for phptrace
- 	   /* Replace executor */
+ 	/* Replace executor */
 	#if PHP_VERSION_ID < 50500
 	    pt_ori_execute = zend_execute;
 	    zend_execute = pt_execute;
@@ -356,8 +355,6 @@ PHP_MSHUTDOWN_FUNCTION(apm)
 
 	UNREGISTER_INI_ENTRIES();
 
-
-
 	if (APM_G(enabled)) {
 		driver_entry = APM_G(drivers);
 		while ((driver_entry = driver_entry->next) != NULL) {
@@ -373,7 +370,7 @@ PHP_MSHUTDOWN_FUNCTION(apm)
 
 
 	//mh add for phptrace
- 	   /* Restore original executor */
+ 	/* Restore original executor */
 	#if PHP_VERSION_ID < 50500
 	    zend_execute = pt_ori_execute;
 	#else
@@ -396,7 +393,6 @@ PHP_RINIT_FUNCTION(apm)
 	APM_INIT_FILE_STATS_RECORD;
 	APM_INIT_FILE_EVENTS_RECORD;
 	APM_INIT_FILE_TRACE_RECORD;
-
 
 	if (APM_G(enabled)) {
 		memset(&APM_G(request_data), 0, sizeof(struct apm_request_data));
@@ -447,8 +443,6 @@ PHP_RSHUTDOWN_FUNCTION(apm)
 	struct timeval end_tp;
 	zend_bool stats_enabled = 0;
 	int code = SUCCESS;
-
-
 
 	// mh add for phptrace
 
@@ -1051,6 +1045,11 @@ static void pt_frame_display(pt_frame_t *frame TSRMLS_DC, zend_bool indent, cons
     char *buf;
     va_list ap;
 
+    // mh add 
+	char *record_buf = emalloc(1000);
+
+    //mh add end
+
     /* indent */
     if (indent) {
         zend_printf("%*s", (frame->level - 1) * 4, "");
@@ -1069,15 +1068,28 @@ static void pt_frame_display(pt_frame_t *frame TSRMLS_DC, zend_bool indent, cons
     if ((frame->functype & PT_FUNC_TYPES) == PT_FUNC_NORMAL ||
             frame->functype & PT_FUNC_TYPES & PT_FUNC_INCLUDES) {
         zend_printf("%s(", frame->function);
+        // add for trace
+        sprintf(record_buf, "%s(", frame->function);
+
+
+        APM_RECORD_TRACE(record_buf);
     } else if ((frame->functype & PT_FUNC_TYPES) == PT_FUNC_MEMBER) {
         zend_printf("%s->%s(", frame->class, frame->function);
+        sprintf(record_buf, "%s->%s(", frame->class, frame->function);
+        APM_RECORD_TRACE(record_buf);
     } else if ((frame->functype & PT_FUNC_TYPES) == PT_FUNC_STATIC) {
         zend_printf("%s::%s(", frame->class, frame->function);
+        sprintf(record_buf, "%s::%s(", frame->class, frame->function);
+        APM_RECORD_TRACE(record_buf);
     } else if ((frame->functype & PT_FUNC_TYPES) == PT_FUNC_EVAL) {
         zend_printf("%s", frame->function);
+        sprintf(record_buf, "%s", frame->function);
+        APM_RECORD_TRACE(record_buf);
         has_bracket = 0;
     } else {
         zend_printf("unknown");
+        sprintf(record_buf, "%s", "unknown");
+        APM_RECORD_TRACE(record_buf);
         has_bracket = 0;
     }
 
@@ -1085,29 +1097,51 @@ static void pt_frame_display(pt_frame_t *frame TSRMLS_DC, zend_bool indent, cons
     if (frame->arg_count) {
         for (i = 0; i < frame->arg_count; i++) {
             zend_printf("%s", frame->args[i]);
+        	sprintf(record_buf, "%s", frame->args[i]);
+        	APM_RECORD_TRACE(record_buf);
+
             if (i < frame->arg_count - 1) {
                 zend_printf(", ");
+        		sprintf(record_buf, "%s", ", ");
+        		APM_RECORD_TRACE(record_buf);
             }
         }
     }
     if (has_bracket) {
         zend_printf(")");
+       	sprintf(record_buf, "%s", ")");
+		APM_RECORD_TRACE(record_buf);
     }
 
     /* return value */
     if (frame->type == PT_FRAME_EXIT && frame->retval) {
         zend_printf(" = %s", frame->retval);
+       	sprintf(record_buf, " = %s", frame->retval);
+		APM_RECORD_TRACE(record_buf);
     }
 
     /* TODO output relative filepath */
     zend_printf(" called at [%s:%d]", frame->filename, frame->lineno);
+   	sprintf(record_buf, " called at [%s:%d]", frame->filename, frame->lineno);
+	APM_RECORD_TRACE(record_buf);
+
+
     if (frame->type == PT_FRAME_EXIT) {
         zend_printf(" wt: %.3f ct: %.3f\n",
                 ((frame->exit.wall_time - frame->entry.wall_time) / 1000000.0),
                 ((frame->exit.cpu_time - frame->entry.cpu_time) / 1000000.0));
+       	sprintf(record_buf, " wt: %.3f ct: %.3f\n",
+                ((frame->exit.wall_time - frame->entry.wall_time) / 1000000.0),
+                ((frame->exit.cpu_time - frame->entry.cpu_time) / 1000000.0));
+		APM_RECORD_TRACE(record_buf);
     } else {
         zend_printf("\n");
+        APM_RECORD_TRACE("\n");
     }
+
+    //mh add 
+
+    efree(record_buf);
 }
 
 
