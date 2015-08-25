@@ -50,13 +50,13 @@
 #include "common/trace_time.h"
 #include "common/trace_type.h"
 #include "common/trace_ctrl.h"
- #include "common/trace_comm.h"
+#include "common/trace_comm.h"
 #include "common/sds/sds.h"
 
- #include "zend_extensions.h"
+#include "zend_extensions.h"
 #include "SAPI.h"
 
- #define HAVE_GETRUSAGE 1
+#define HAVE_GETRUSAGE 1
 
 #define APM_E_ALL (E_ALL | E_STRICT)
 

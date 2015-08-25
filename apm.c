@@ -458,8 +458,6 @@ PHP_RSHUTDOWN_FUNCTION(apm)
 
 	//mh add end
 
-
-
 	// 	//mh add for phptrace
  	//    /* Restore original executor */
 	// #if PHP_VERSION_ID < 50500
@@ -493,11 +491,15 @@ PHP_RSHUTDOWN_FUNCTION(apm)
 #endif
 			if (
 				APM_G(duration) > 1000.0 * APM_G(stats_duration_threshold)
-#ifdef HAVE_GETRUSAGE
-				|| APM_G(user_cpu) > 1000.0 * APM_G(stats_user_cpu_threshold)
-				|| APM_G(sys_cpu) > 1000.0 * APM_G(stats_sys_cpu_threshold)
-#endif
+// #ifdef HAVE_GETRUSAGE
+// 				|| APM_G(user_cpu) > 1000.0 * APM_G(stats_user_cpu_threshold)
+// 				|| APM_G(sys_cpu) > 1000.0 * APM_G(stats_sys_cpu_threshold)
+// #endif
 				) {
+
+				//mh add for phptrace
+				PTG(dotrace) = 1;
+				//mh add end
 
 				driver_entry = APM_G(drivers);
 				APM_DEBUG("Stats loop begin\n");
@@ -1391,7 +1393,7 @@ exec:
     PTG(level)++;
 
     //if (dotrace) {
-    if (1) {
+    if (dotrace) {
         pt_frame_build(&frame, internal, PT_FRAME_ENTRY, ex_entry, op_array TSRMLS_CC);
 
         /* Register reture value ptr */
@@ -1406,7 +1408,7 @@ exec:
         //    pt_frame_send(&frame TSRMLS_CC);
         //}
         //if (dotrace & TRACE_TO_OUTPUT) {
-        if (1) {
+        if (dotrace) {
             pt_frame_display(&frame TSRMLS_CC, 1, "> ");
         }
         
@@ -1444,7 +1446,7 @@ exec:
     } zend_end_try();
 
     //if (dotrace) {
-    if (1) {
+    if (dotrace) {
         PROFILING_SET(frame.exit);
 
         if (!dobailout) {
