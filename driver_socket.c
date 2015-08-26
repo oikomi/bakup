@@ -226,13 +226,13 @@ int apm_driver_socket_rshutdown(TSRMLS_D)
 	ADD_Z_DATA("status", status);
 
 	/* Add ip, referer, ... if an error occured or if thresold is reached. */
-	if (
-		APM_G(socket_events) != *APM_G(socket_last_event)
-		|| APM_G(duration) > 1000.0 * APM_G(stats_duration_threshold)
-#ifdef HAVE_GETRUSAGE
-		|| APM_G(user_cpu) > 1000.0 * APM_G(stats_user_cpu_threshold)
-		|| APM_G(sys_cpu) > 1000.0 * APM_G(stats_sys_cpu_threshold)
-#endif
+	if (1
+		//APM_G(socket_events) != *APM_G(socket_last_event)
+// 		|| APM_G(duration) > 1000.0 * APM_G(stats_duration_threshold)
+// #ifdef HAVE_GETRUSAGE
+// 		|| APM_G(user_cpu) > 1000.0 * APM_G(stats_user_cpu_threshold)
+// 		|| APM_G(sys_cpu) > 1000.0 * APM_G(stats_sys_cpu_threshold)
+// #endif
 	) {
 		ADD_Z_DATA("ip", ip);
 		ADD_Z_DATA("referer", referer);
