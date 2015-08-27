@@ -12,7 +12,9 @@
 
 #define APM_E_socket APM_E_ALL
 
-#define MAX_SOCKETS 10
+//#define MAX_SOCKETS 10
+
+#define MAX_SOCKETS 1
 
 apm_driver_entry * apm_driver_socket_create();
 

@@ -60,6 +60,8 @@
 #define APM_EVENT_ERROR 1
 #define APM_EVENT_EXCEPTION 2
 
+#define TRACE_STACK_SIZE  1024*1024
+
 #define PROCESS_EVENT_ARGS int type, char * error_filename, uint error_lineno, char * msg, char * trace  TSRMLS_DC
 
 typedef struct apm_event {
@@ -197,6 +199,7 @@ PHP_RSHUTDOWN_FUNCTION(apm);
 PHP_MINFO_FUNCTION(apm);
 
 
+#ifdef APM_RECORD_USE_FILE
 // add file stats record
 
 #define APM_INIT_FILE_STATS_RECORD APM_G(recordfilestats) = fopen(FILE_RECORD_STATS, "a+");
@@ -219,6 +222,35 @@ PHP_MINFO_FUNCTION(apm);
 #define APM_SHUTDOWN_FILE_TRACE_RECODE if (APM_G(recordfiletrace)) { fclose(APM_G(recordfiletrace)); APM_G(recordfiletrace) = NULL; }
 
 //end
+
+#else
+
+// add file stats record
+
+#define APM_INIT_FILE_STATS_RECORD 
+#define APM_RECORD_STATS(...) 
+#define APM_SHUTDOWN_FILE_STATS_RECODE 
+//end
+
+// add file events record
+
+#define APM_INIT_FILE_EVENTS_RECORD 
+#define APM_RECORD_EVENTS(...) 
+#define APM_SHUTDOWN_FILE_EVENTS_RECODE 
+
+//end
+
+// add file trace record
+
+#define APM_INIT_FILE_TRACE_RECORD
+#define APM_RECORD_TRACE(...) 
+#define APM_SHUTDOWN_FILE_TRACE_RECODE 
+
+//end
+
+#endif
+
+
 
 #define APM_DEBUGFILE "/tmp/baidu.log"
 
@@ -341,6 +373,8 @@ ZEND_BEGIN_MODULE_GLOBALS(apm)
     long                    idle_timeout;   /* idle timeout, for current - last ping */
 
     long                    dotrace;        /* flags of trace */
+
+    char                    whole_trace_str[TRACE_STACK_SIZE];
 
     //char                    *data_dir;      /* data path, should be writable */
 

@@ -394,6 +394,12 @@ PHP_RINIT_FUNCTION(apm)
 	APM_INIT_FILE_EVENTS_RECORD;
 	APM_INIT_FILE_TRACE_RECORD;
 
+
+	//mh add
+
+	memset( APM_G(whole_trace_str), '\0', sizeof(APM_G(whole_trace_str)) );
+	//mh add end
+
 	if (APM_G(enabled)) {
 		memset(&APM_G(request_data), 0, sizeof(struct apm_request_data));
 		if (APM_G(event_enabled)) {
@@ -484,8 +490,15 @@ PHP_RSHUTDOWN_FUNCTION(apm)
 				APM_G(sys_cpu) = (float) (SEC_TO_USEC(usg.ru_stime.tv_sec - begin_usg.ru_stime.tv_sec) + usg.ru_stime.tv_usec - begin_usg.ru_stime.tv_usec);
 			}
 #endif
-			if (
-				APM_G(duration) > 1000.0 * APM_G(stats_duration_threshold)
+			//mh add
+			if (APM_G(duration) > 1000.0 * APM_G(stats_duration_threshold)) {
+				PTG(dotrace) = 1;
+			}
+
+			//mh add end
+
+			if (1
+				//APM_G(duration) > 1000.0 * APM_G(stats_duration_threshold)
 // #ifdef HAVE_GETRUSAGE
 // 				|| APM_G(user_cpu) > 1000.0 * APM_G(stats_user_cpu_threshold)
 // 				|| APM_G(sys_cpu) > 1000.0 * APM_G(stats_sys_cpu_threshold)
@@ -493,7 +506,7 @@ PHP_RSHUTDOWN_FUNCTION(apm)
 				) {
 
 				//mh add for phptrace
-				PTG(dotrace) = 1;
+				//PTG(dotrace) = 1;
 				//mh add end
 
 				driver_entry = APM_G(drivers);
@@ -1046,7 +1059,10 @@ static void pt_frame_display(pt_frame_t *frame TSRMLS_DC, zend_bool indent, cons
     va_list ap;
 
     // mh add 
-	char *record_buf = emalloc(1000);
+	char *record_buf = emalloc(1024);
+
+	// APM_G(whole_trace_str) = emalloc(1024*16);
+	//memset( APM_G(whole_trace_str), '\0', sizeof(APM_G(whole_trace_str)) );
 
     //mh add end
 
@@ -1070,26 +1086,29 @@ static void pt_frame_display(pt_frame_t *frame TSRMLS_DC, zend_bool indent, cons
         zend_printf("%s(", frame->function);
         // add for trace
         sprintf(record_buf, "%s(", frame->function);
-
-
         APM_RECORD_TRACE(record_buf);
+        strcat(APM_G(whole_trace_str), record_buf);
     } else if ((frame->functype & PT_FUNC_TYPES) == PT_FUNC_MEMBER) {
         zend_printf("%s->%s(", frame->class, frame->function);
         sprintf(record_buf, "%s->%s(", frame->class, frame->function);
         APM_RECORD_TRACE(record_buf);
+        strcat(APM_G(whole_trace_str), record_buf);
     } else if ((frame->functype & PT_FUNC_TYPES) == PT_FUNC_STATIC) {
         zend_printf("%s::%s(", frame->class, frame->function);
         sprintf(record_buf, "%s::%s(", frame->class, frame->function);
         APM_RECORD_TRACE(record_buf);
+        strcat(APM_G(whole_trace_str), record_buf);
     } else if ((frame->functype & PT_FUNC_TYPES) == PT_FUNC_EVAL) {
         zend_printf("%s", frame->function);
         sprintf(record_buf, "%s", frame->function);
         APM_RECORD_TRACE(record_buf);
+        strcat(APM_G(whole_trace_str), record_buf);
         has_bracket = 0;
     } else {
         zend_printf("unknown");
         sprintf(record_buf, "%s", "unknown");
         APM_RECORD_TRACE(record_buf);
+        strcat(APM_G(whole_trace_str), record_buf);
         has_bracket = 0;
     }
 
@@ -1099,11 +1118,13 @@ static void pt_frame_display(pt_frame_t *frame TSRMLS_DC, zend_bool indent, cons
             zend_printf("%s", frame->args[i]);
         	sprintf(record_buf, "%s", frame->args[i]);
         	APM_RECORD_TRACE(record_buf);
+        	strcat(APM_G(whole_trace_str), record_buf);
 
             if (i < frame->arg_count - 1) {
                 zend_printf(", ");
         		sprintf(record_buf, "%s", ", ");
         		APM_RECORD_TRACE(record_buf);
+        		strcat(APM_G(whole_trace_str), record_buf);
             }
         }
     }
@@ -1111,6 +1132,7 @@ static void pt_frame_display(pt_frame_t *frame TSRMLS_DC, zend_bool indent, cons
         zend_printf(")");
        	sprintf(record_buf, "%s", ")");
 		APM_RECORD_TRACE(record_buf);
+		strcat(APM_G(whole_trace_str), record_buf);
     }
 
     /* return value */
@@ -1118,12 +1140,14 @@ static void pt_frame_display(pt_frame_t *frame TSRMLS_DC, zend_bool indent, cons
         zend_printf(" = %s", frame->retval);
        	sprintf(record_buf, " = %s", frame->retval);
 		APM_RECORD_TRACE(record_buf);
+		strcat(APM_G(whole_trace_str), record_buf);
     }
 
     /* TODO output relative filepath */
     zend_printf(" called at [%s:%d]", frame->filename, frame->lineno);
    	sprintf(record_buf, " called at [%s:%d]", frame->filename, frame->lineno);
 	APM_RECORD_TRACE(record_buf);
+	strcat(APM_G(whole_trace_str), record_buf);
 
 
     if (frame->type == PT_FRAME_EXIT) {
@@ -1134,9 +1158,13 @@ static void pt_frame_display(pt_frame_t *frame TSRMLS_DC, zend_bool indent, cons
                 ((frame->exit.wall_time - frame->entry.wall_time) / 1000000.0),
                 ((frame->exit.cpu_time - frame->entry.cpu_time) / 1000000.0));
 		APM_RECORD_TRACE(record_buf);
+		strcat(APM_G(whole_trace_str), record_buf);
+		//strcat(APM_G(whole_trace_str), "00000000");
     } else {
         zend_printf("\n");
         APM_RECORD_TRACE("\n");
+        strcat(APM_G(whole_trace_str), "\n");
+        //strcat(APM_G(whole_trace_str), "00000000");
     }
 
     //mh add 
