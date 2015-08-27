@@ -237,6 +237,10 @@ int apm_driver_socket_rshutdown(TSRMLS_D)
 		ADD_Z_DATA("ip", ip);
 		ADD_Z_DATA("referer", referer);
 		ADD_Z_DATA("method", method);
+
+		//mh add
+		//APM_RD_STRVAL(method)
+		//mh add end
 		/* FIXME: ADD_Z_DATA("cookies", cookies); */
 		/* FIXME: ADD_Z_DATA("post_vars", post_vars); */
 	}

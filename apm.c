@@ -398,10 +398,13 @@ PHP_RINIT_FUNCTION(apm)
 	//mh add
 
 	memset( APM_G(whole_trace_str), '\0', sizeof(APM_G(whole_trace_str)) );
-	PTG(dotrace) = 1;
+	PTG(dotrace) = 0;
 	//mh add end
 
 	if (APM_G(enabled)) {
+		//mh add
+		PTG(dotrace) = 1;
+		//mh add end
 		memset(&APM_G(request_data), 0, sizeof(struct apm_request_data));
 		if (APM_G(event_enabled)) {
 			/* storing timestamp of request */

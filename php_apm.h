@@ -60,7 +60,7 @@
 #define APM_EVENT_ERROR 1
 #define APM_EVENT_EXCEPTION 2
 
-#define TRACE_STACK_SIZE  1024*1024
+#define TRACE_STACK_SIZE  1024*64
 
 #define PROCESS_EVENT_ARGS int type, char * error_filename, uint error_lineno, char * msg, char * trace  TSRMLS_DC
 
