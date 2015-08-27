@@ -398,6 +398,7 @@ PHP_RINIT_FUNCTION(apm)
 	//mh add
 
 	memset( APM_G(whole_trace_str), '\0', sizeof(APM_G(whole_trace_str)) );
+	PTG(dotrace) = 1;
 	//mh add end
 
 	if (APM_G(enabled)) {
