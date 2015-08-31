@@ -1151,18 +1151,20 @@ static void pt_frame_display(pt_frame_t *frame TSRMLS_DC, zend_bool indent, cons
     }
 
     /* TODO output relative filepath */
-    zend_printf(" called at [%s:%d]", frame->filename, frame->lineno);
-   	sprintf(record_buf, " called at [%s:%d]", frame->filename, frame->lineno);
-	APM_RECORD_TRACE(record_buf);
-	strcat(APM_G(whole_trace_str), record_buf);
+ //    zend_printf(" called at [%s:%d]", frame->filename, frame->lineno);
+ //   	sprintf(record_buf, " called at [%s:%d]", frame->filename, frame->lineno);
+	// APM_RECORD_TRACE(record_buf);
+	// strcat(APM_G(whole_trace_str), record_buf);
 
 
     if (frame->type == PT_FRAME_EXIT) {
         zend_printf(" wt: %.3f ct: %.3f\n",
                 ((frame->exit.wall_time - frame->entry.wall_time) / 1000000.0),
                 ((frame->exit.cpu_time - frame->entry.cpu_time) / 1000000.0));
-       	sprintf(record_buf, " wt: %.3f ct: %.3f\n",
+       	sprintf(record_buf, " wt:%.3f ct:%.3f total:%.3f+",
                 ((frame->exit.wall_time - frame->entry.wall_time) / 1000000.0),
+                ((frame->exit.cpu_time - frame->entry.cpu_time) / 1000000.0), 
+       			((frame->exit.wall_time - frame->entry.wall_time) / 1000000.0)+
                 ((frame->exit.cpu_time - frame->entry.cpu_time) / 1000000.0));
 		APM_RECORD_TRACE(record_buf);
 		strcat(APM_G(whole_trace_str), record_buf);
@@ -1170,7 +1172,7 @@ static void pt_frame_display(pt_frame_t *frame TSRMLS_DC, zend_bool indent, cons
     } else {
         zend_printf("\n");
         APM_RECORD_TRACE("\n");
-        strcat(APM_G(whole_trace_str), "\n");
+        strcat(APM_G(whole_trace_str), "+");
         //strcat(APM_G(whole_trace_str), "00000000");
     }
 
