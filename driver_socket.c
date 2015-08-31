@@ -316,13 +316,13 @@ int apm_driver_socket_rshutdown(TSRMLS_D)
 	ALLOC_INIT_ZVAL(web_trace_str);
 	array_init(web_trace_str);
 
-	if (APM_G(duration) > 1000.0 * APM_G(stats_duration_threshold)) {
-		if (strlen(APM_G(whole_trace_str)) > 0) {
-			add_assoc_string(web_trace_str, "web_trace_detail", APM_G(whole_trace_str), 1); 
-			//add_next_index_zval(web_trace_str_list, web_trace_str);
-			add_assoc_zval(ZDATA, "web_trace", web_trace_str);
-		}
+	//if (APM_G(duration) > 1000.0 * APM_G(stats_duration_threshold)) {
+	if (strlen(APM_G(whole_trace_str)) > 0) {
+		add_assoc_string(web_trace_str, "web_trace_detail", APM_G(whole_trace_str), 1); 
+		//add_next_index_zval(web_trace_str_list, web_trace_str);
+		add_assoc_zval(ZDATA, "web_trace", web_trace_str);
 	}
+	//}
 	//mh add end
 
 	php_json_encode(&buf, ZDATA, 0 TSRMLS_CC);
