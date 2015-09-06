@@ -1075,7 +1075,7 @@ static void pt_frame_display(pt_frame_t *frame TSRMLS_DC, zend_bool indent, cons
         zend_printf("%*s", (frame->level - 1) * 4, "");
         sprintf(record_buf, "%*s", (frame->level - 1) * 4, "");
         APM_RECORD_TRACE(record_buf);
-        strcat(APM_G(whole_trace_str), record_buf);
+        //strcat(APM_G(whole_trace_str), record_buf);
     }
 
     /* format */
