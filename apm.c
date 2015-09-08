@@ -1143,12 +1143,13 @@ static void pt_frame_display(pt_frame_t *frame TSRMLS_DC, zend_bool indent, cons
     }
 
     /* return value */
-    if (frame->type == PT_FRAME_EXIT && frame->retval) {
-        zend_printf(" = %s", frame->retval);
-       	sprintf(record_buf, " = %s", frame->retval);
-		APM_RECORD_TRACE(record_buf);
-		strcat(APM_G(whole_trace_str), record_buf);
-    }
+    //mh modify 
+  //   if (frame->type == PT_FRAME_EXIT && frame->retval) {
+  //       zend_printf(" = %s", frame->retval);
+  //      	sprintf(record_buf, " = %s", frame->retval);
+		// APM_RECORD_TRACE(record_buf);
+		// strcat(APM_G(whole_trace_str), record_buf);
+  //   }
 
     /* TODO output relative filepath */
  //    zend_printf(" called at [%s:%d]", frame->filename, frame->lineno);
@@ -1168,12 +1169,10 @@ static void pt_frame_display(pt_frame_t *frame TSRMLS_DC, zend_bool indent, cons
                 ((frame->exit.cpu_time - frame->entry.cpu_time) / 1000000.0));
 		APM_RECORD_TRACE(record_buf);
 		strcat(APM_G(whole_trace_str), record_buf);
-		//strcat(APM_G(whole_trace_str), "00000000");
     } else {
         zend_printf("\n");
         APM_RECORD_TRACE("\n");
         strcat(APM_G(whole_trace_str), "+");
-        //strcat(APM_G(whole_trace_str), "00000000");
     }
 
     //mh add 
