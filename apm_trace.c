@@ -1,5 +1,9 @@
-
-
+/*
+ * apm_trace.c
+ *
+ *  Created on: 15/08/2015
+ *      Author: miaohong(miaohong01@baidu.com)
+ */
 
 /*
  * Start profiling - called just before calling the actual function

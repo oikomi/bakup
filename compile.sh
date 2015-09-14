@@ -4,7 +4,7 @@ make clean
 
 phpize
 
-./configure  --without-mysql  --with-debugfile=/tmp/baidu.log
+./configure  --without-mysql  --with-debugfile=/tmp/apm/baidu.log
 
 #./configure   --with-debugfile=/tmp/baidu.log
 
@@ -14,4 +14,3 @@ pkill php-fpm
 
 /mh/phphook/php/sbin/php-fpm -R
 
-echo "done"

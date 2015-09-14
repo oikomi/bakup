@@ -2,7 +2,7 @@
 /* config.h.in.  Generated from configure.in by autoheader.  */
 
 /* file used for debugging APM */
-#define APM_DEBUGFILE "/tmp/baidu.log"
+#define APM_DEBUGFILE "/tmp/apm/baidu.log"
 
 /* activate MySQL storage driver */
 /* #undef APM_DRIVER_MYSQL */

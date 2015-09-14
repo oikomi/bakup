@@ -5,23 +5,22 @@
  *      Author: miaohong(miaohong01@baidu.com)
  */
 
-
 #ifdef HAVE_CONFIG_H
-	#include "config.h"
+#include "config.h"
 #endif
 
 #ifdef PHP_WIN32
-	#include "win32/time.h"
+#include "win32/time.h"
 #else
-	#include "main/php_config.h"
+#include "main/php_config.h"
 #endif
 
 #ifdef HAVE_GETRUSAGE
-	#include <sys/resource.h>
+#include <sys/resource.h>
 #endif
 
 #ifdef HAVE_SYS_TIME_H
-	#include <sys/time.h>
+#include <sys/time.h>
 #endif
 
 #include "php.h"
@@ -32,22 +31,19 @@
 #include "ext/standard/info.h"
 
 #ifdef APM_DRIVER_MYSQL
-	#include "driver_mysql.h"
+#include "driver_mysql.h"
 #endif
 
 #ifdef APM_DRIVER_SOCKET
-	#include "driver_socket.h"
+#include "driver_socket.h"
 #endif
 
-
-
- //mh add  for phptrace
+//mh add for phptrace
 /* Make sapi_module accessable */
 extern sapi_module_struct sapi_module;
 
 /* True global resources - no need for thread safety here */
 static int le_trace;
-
 
 /**
  * Trace Global
@@ -55,11 +51,11 @@ static int le_trace;
  */
 /* Debug output */
 //#if TRACE_DEBUG_OUTPUT
-#if 1
+//#if 1
 #define PTD(format, args...) fprintf(stderr, "[PTDebug:%d] " format "\n", __LINE__, __VA_ARGS__)
-#else
-#define PTD(format, args...)
-#endif
+//#else
+//#define PTD(format, args...)
+//#endif
 
 /* Ctrl module */
 #define CTRL_IS_ACTIVE()    pt_ctrl_is_active(&PTG(ctrl), PTG(pid))
@@ -93,8 +89,7 @@ static int le_trace;
 typedef unsigned long zend_uintptr_t;
 #endif
 
- //mh add end
-
+//mh add end
 ZEND_DECLARE_MODULE_GLOBALS(apm);
 static PHP_GINIT_FUNCTION(apm);
 static PHP_GSHUTDOWN_FUNCTION(apm);
@@ -219,8 +214,6 @@ PHP_INI_BEGIN()
 	//STD_PHP_INI_ENTRY("baidu.apm.file_exception_mode","1", PHP_INI_PERDIR, OnUpdateLongGEZero, file_exception_mode, zend_apm_globals, apm_globals)
 	/* error_reporting of the driver */
 	//STD_PHP_INI_ENTRY("baidu.apm.file_error_reporting", NULL, PHP_INI_ALL, OnUpdateAPMfileErrorReporting, file_error_reporting, zend_apm_globals, apm_globals)
-	
-
 
 #ifdef APM_DRIVER_MYSQL
 	/* Boolean controlling whether the driver is active or not */
@@ -368,7 +361,6 @@ PHP_MSHUTDOWN_FUNCTION(apm)
 	// 
 	zend_error_cb = old_error_cb;
 
-
 	//mh add for phptrace
  	/* Restore original executor */
 	#if PHP_VERSION_ID < 50500
@@ -430,7 +422,6 @@ PHP_RINIT_FUNCTION(apm)
 		zend_error_cb = apm_error_cb;
 		zend_throw_exception_hook = apm_throw_exception_hook;
 	}
-
 
 	// mh add for phptrace
 
@@ -669,7 +660,6 @@ static void process_event(int event_type, int type, char * error_filename, uint 
 
 	// record for file
 
-
 	driver_entry = APM_G(drivers);
 	APM_DEBUG("Direct processing process_event loop begin\n");
 	while ((driver_entry = driver_entry->next) != NULL) {
@@ -808,10 +798,7 @@ void do_file_record_events() {
 
 }
 
-
-// mh add 
-
-
+// mh add for trace
 static void pt_frame_build(pt_frame_t *frame, zend_bool internal, unsigned char type, zend_execute_data *ex, zend_op_array *op_array TSRMLS_DC)
 {
     int i;
@@ -1143,17 +1130,17 @@ static void pt_frame_display(pt_frame_t *frame TSRMLS_DC, zend_bool indent, cons
     }
 
     /* return value */
-    //mh modify 
-  //   if (frame->type == PT_FRAME_EXIT && frame->retval) {
-  //       zend_printf(" = %s", frame->retval);
-  //      	sprintf(record_buf, " = %s", frame->retval);
+    // mh modify 
+  	//   if (frame->type == PT_FRAME_EXIT && frame->retval) {
+  	//       zend_printf(" = %s", frame->retval);
+  	//      	sprintf(record_buf, " = %s", frame->retval);
 		// APM_RECORD_TRACE(record_buf);
 		// strcat(APM_G(whole_trace_str), record_buf);
-  //   }
+  	//   }
 
     /* TODO output relative filepath */
- //    zend_printf(" called at [%s:%d]", frame->filename, frame->lineno);
- //   	sprintf(record_buf, " called at [%s:%d]", frame->filename, frame->lineno);
+ 	//    zend_printf(" called at [%s:%d]", frame->filename, frame->lineno);
+ 	//   	sprintf(record_buf, " called at [%s:%d]", frame->filename, frame->lineno);
 	// APM_RECORD_TRACE(record_buf);
 	// strcat(APM_G(whole_trace_str), record_buf);
 
@@ -1176,10 +1163,8 @@ static void pt_frame_display(pt_frame_t *frame TSRMLS_DC, zend_bool indent, cons
     }
 
     //mh add 
-
     efree(record_buf);
 }
-
 
 /**
  * Trace Manipulation of Status
@@ -1301,7 +1286,6 @@ static void pt_status_display(pt_status_t *status TSRMLS_DC)
 //     return 0;
 // }
 
-
 /**
  * Trace Misc Function
  * --------------------
@@ -1367,7 +1351,6 @@ static void pt_set_inactive(TSRMLS_D)
     //     pt_comm_sclose(&PTG(comm), 1);
     // }
 }
-
 
 /**
  * Trace Executor Replacement
@@ -1552,7 +1535,6 @@ exec:
     }
 }
 
-
 #if PHP_VERSION_ID < 50500
 ZEND_API void pt_execute(zend_op_array *op_array TSRMLS_DC)
 {
@@ -1574,11 +1556,4 @@ ZEND_API void pt_execute_internal(zend_execute_data *execute_data, zend_fcall_in
     pt_execute_core(1, execute_data, fci, return_value_used TSRMLS_CC);
 }
 #endif
-
-
-
 //mh add end
-
-
-
-

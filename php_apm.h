@@ -5,8 +5,6 @@
  *      Author: miaohong(miaohong01@baidu.com)
  */
 
-
-
 #ifndef PHP_APM_H
 #define PHP_APM_H
 
@@ -198,7 +196,6 @@ PHP_RINIT_FUNCTION(apm);
 PHP_RSHUTDOWN_FUNCTION(apm);
 PHP_MINFO_FUNCTION(apm);
 
-
 #ifdef APM_RECORD_USE_FILE
 // add file stats record
 
@@ -249,8 +246,6 @@ PHP_MINFO_FUNCTION(apm);
 //end
 
 #endif
-
-
 
 #define APM_DEBUGFILE "/tmp/baidu.log"
 
@@ -315,7 +310,6 @@ ZEND_BEGIN_MODULE_GLOBALS(apm)
 	FILE * recordfileevents;
 	FILE * recordfiletrace;
 
-
 #ifdef APM_DRIVER_MYSQL
 	/* Boolean controlling whether the driver is active or not */
 	zend_bool mysql_enabled;
@@ -344,7 +338,6 @@ ZEND_BEGIN_MODULE_GLOBALS(apm)
 	zend_bool mysql_is_request_created;
 #endif
 
-
 #ifdef APM_DRIVER_SOCKET
 	/* Boolean controlling whether the driver is active or not */
 	zend_bool socket_enabled;
@@ -361,8 +354,6 @@ ZEND_BEGIN_MODULE_GLOBALS(apm)
 	apm_event_entry *socket_events;
 	apm_event_entry **socket_last_event;
 #endif
-
-
 
 	// mh add for phptrace
 
@@ -393,15 +384,11 @@ ZEND_END_MODULE_GLOBALS(apm)
 #define APM_G(v) (apm_globals.v)
 #endif
 
-
-
 #ifdef ZTS
 #define PTG(v) TSRMG(apm_globals_id, zend_apm_globals *, v)
 #else
 #define PTG(v) (apm_globals.v)
 #endif
-
-
 
 #define APM_RD(data) APM_G(request_data).data
 
@@ -439,7 +426,6 @@ void extract_data();
 void do_file_record_stats();
 void do_file_record_events();
 
-
 //mh add
 
 static void pt_frame_build(pt_frame_t *frame, zend_bool internal, unsigned char type, zend_execute_data *ex, zend_op_array *op_array TSRMLS_DC);
@@ -467,7 +453,4 @@ static void (*pt_ori_execute_internal)(zend_execute_data *execute_data_ptr, zend
 ZEND_API void pt_execute_ex(zend_execute_data *execute_data TSRMLS_DC);
 ZEND_API void pt_execute_internal(zend_execute_data *execute_data, zend_fcall_info *fci, int return_value_used TSRMLS_DC);
 #endif
-
-
 // mh add end
-

@@ -4,8 +4,8 @@ top_srcdir = /mh/phphook/baiduapm
 top_builddir = /mh/phphook/baiduapm
 EGREP = /bin/grep -E
 SED = /bin/sed
-CONFIGURE_COMMAND = './configure' '--without-mysql' '--with-debugfile=/tmp/baidu.log'
-CONFIGURE_OPTIONS = '--without-mysql' '--with-debugfile=/tmp/baidu.log'
+CONFIGURE_COMMAND = './configure' '--without-mysql' '--with-debugfile=/tmp/apm/baidu.log'
+CONFIGURE_OPTIONS = '--without-mysql' '--with-debugfile=/tmp/apm/baidu.log'
 SHLIB_SUFFIX_NAME = so
 SHLIB_DL_SUFFIX_NAME = so
 ZEND_EXT_TYPE = zend_extension

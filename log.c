@@ -1,10 +1,17 @@
+/*
+ * log.c
+ *
+ *  Created on: 13/08/2015
+ *      Author: miaohong(miaohong01@baidu.com)
+ */
+
 
 #include<time.h>
 #include<string.h> 
 #include<stdio.h>
 #include<assert.h>
 
-int getTime(char *out, int fmt) 
+int get_time(char *out, int fmt) 
 {
     if(out == NULL)
         return -1;
